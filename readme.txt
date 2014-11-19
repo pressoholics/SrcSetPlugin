@@ -8,7 +8,7 @@
 
 
 === YOUR PLUGIN NAME HERE by Benjamin Moody ===
-Contributors: ben.moody
+Contributors: ben.moody, ew_holmes
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: 

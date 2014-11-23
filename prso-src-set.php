@@ -1,44 +1,9 @@
 <?php
-
-/**
-	!!!HOW TO SETUP!!!
-	
-	Use some find and replace to quickly set some unique names for your plugin.
-	
-	1. Create unique constant prefix: 
-	
-			PRSOSRCSET --> MYUNIQUECONSTANT
-			
-	2. Add name of your unique plugin class file: 
-	
-			prso-src-set --> my-unique-filename
-			
-	3. Create uniqueue name for plugin class: 
-	
-			PrsoSrcSet --> MyUniqueClassName
-			
-	4. Create unique slug for plugin: 
-	
-			prso_src_set --> my_unique_slug_name
-			
-	5. If using option framework create uniqueu class name for options class: 
-	
-			PrsoSrcSetOptions --> MyUniqueOptionsClass
-			
-	6. If not using options framework then comment out $this->load_redux_options_framework(); line 
-		and delete ReduxFramework folder from inc folder.
-	
-	Also you will need to delete git hidden folder in root of your copy.
-	
-	Delete this once you have done this basic setup, the framework is ready for your project
-	
-**/
-
 /*
  * Plugin Name: SrcSet Plugin
  * Plugin URI: 
  * Description: 
- * Author: Benjamin Moody
+ * Author: Benjamin Moody, Eric Holmes
  * Version: 1.0
  * Author URI: http://www.benjaminmoody.com
  * License: GPL2+

@@ -21,6 +21,9 @@ class PrsoSrcSet {
 		add_action( 'admin_init', array($this, 'admin_init_plugin') );
 		add_action( 'current_screen', array($this, 'current_screen_init_plugin') );
 		
+		// Attachment image attribute filter
+		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_image_srcset' ), 10, 2 );
+		// add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 10, 2 );
 	}
 	
 	/**
@@ -123,6 +126,28 @@ class PrsoSrcSet {
 		
 	}
 	
+	
+    /**
+     * Create our srcset attribute
+     * 
+     * TODO: Build in checks for the image group to use.
+     */
+    function add_image_srcset( $attr, $attachment ) {
+		$srcset = array();
+		
+		foreach ( self::$class_config['Default'] as $breakpoint  => $attributes ) {
+			$attachment_src = wp_get_attachment_image_src( $attachment->ID, array( $attributes['w'], $attributes['h'] ) );
+			$srcset[] = $attachment_src[0] . " {$breakpoint}w";
+		}
+		$attr['srcset'] = join(',', $srcset );
+        return $attr;
+    }
+
+    function add_media_image_tag_srcset( $html, $attachment_id ){
+        //return str_replace( '/>', 'srcset=""/>', $html );
+    }
+
+        
 	/**
 	* load_redux_options_framework
 	* 

@@ -73,9 +73,10 @@ class PrsoSrcSet {
 		//Register image sizes based on groups in config
 		$this->register_image_sizes();
 		
-		// Attachment image attribute filter
+		//Attachment image attribute filter -- for use with code e.g. get_the_post_thumbnail()
 		add_filter( 'post_thumbnail_html', array( $this, 'add_image_srcset' ), 10, 5 );
 		
+		//Attachment image attribute filter -- filters img tags added via tinymce content editor
 		add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 999, 6 );
 		add_filter( 'image_send_to_editor', array( $this, 'add_media_image_tag_srcset' ), 999, 6 );
 		

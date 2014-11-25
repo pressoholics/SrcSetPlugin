@@ -73,19 +73,17 @@ class PrsoSrcSet {
 		//Register image sizes based on groups in config
 		$this->register_image_sizes();
 		
-		//Prevent our custom image sizes being created by default when images are uploaded to media library
-		//add_filter('intermediate_image_sizes_advanced', array($this, 'prevent_resize_on_upload'));
-		
-		//Dynamically create our image thumbnails only when they are first requested on the front end
-		//add_filter('image_downsize', array($this, 'downsize_image_on_first_use'), 10, 3);
-		
 		// Attachment image attribute filter
 		add_filter( 'post_thumbnail_html', array( $this, 'add_image_srcset' ), 10, 5 );
 		
-		//add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 10, 6 );
+		add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 999, 6 );
 		add_filter( 'image_send_to_editor', array( $this, 'add_media_image_tag_srcset' ), 999, 6 );
 		
+		//Filter TINYMCE allowed attributes for img tag
+		add_filter('tiny_mce_before_init', array($this, 'add_tinymce_attributes'));
+		
 	}
+
 	
 	/**
 	* admin_init_plugin
@@ -139,21 +137,59 @@ class PrsoSrcSet {
 	}
 	
 	
+	/**
+	* add_tinymce_attributes
+	* 
+	* @Called By Filter: 'tiny_mce_before_init'
+	* 
+	* Filters the list of img attributes allowed by tinymce when adding images to content area
+	* Here we add in the srcset attribute
+	*
+	* @param	array	$options
+	* @return	array	$options
+	* @access 	public
+	* @author	Ben Moody
+	*/
+	public function add_tinymce_attributes( $options ) {
+		
+		if ( ! isset( $options['extended_valid_elements'] ) ) {
+	        $options['extended_valid_elements'] = '';
+	    } else {
+	        $options['extended_valid_elements'] .= ',';
+	    }
+	 
+	    if ( ! isset( $options['custom_elements'] ) ) {
+	        $options['custom_elements'] = '';
+	    } else {
+	        $options['custom_elements'] .= ',';
+	    }
+	 
+	    $options['extended_valid_elements'] .= 'img[class|src|srcset|alt|width|height]';
+	    $options['custom_elements']         .= 'img[class|src|srcset|alt|width|height]';
+	    return $options;
+		
+	}
+	
     /**
-     * Create our srcset attribute for images called via get_the_post_thumbnail(), ect
-     * 
-     * Called by Filter: post_thumbnail_html
-     *
-     */	
-	function add_image_srcset( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
+    * add_image_srcset
+    *
+    * @Called By Filter: 'post_thumbnail_html'
+    * 
+    * Create our srcset attribute for images called via get_the_post_thumbnail(), ect
+    * 
+    * @return	string	$html
+    * @access 	public
+    * @author	Ben Moody
+    */
+	public function add_image_srcset( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
     	
     	$srcset = array();
     	
     	//Check if requested size is one of our image groups
-    	if( isset(self::$class_config[$size]) ) {
+    	if( isset(self::$class_config['img_groups'][$size]) ) {
 	    	
 	    	//Loop group sizes
-	    	foreach( self::$class_config[$size] as $breakpoint => $image_data ) {
+	    	foreach( self::$class_config['img_groups'][$size] as $breakpoint => $image_data ) {
 		    	
 		    	//Cache unique image name based on group title and breakpoint
 			    $image_name = "{$size}-{$breakpoint}";
@@ -194,17 +230,37 @@ class PrsoSrcSet {
         return $html;
     }
 	
+	/**
+    * add_image_srcset
+    *
+    * @Called By Filter: 'get_image_tag'
+    * @Called By Filter: 'image_send_to_editor'
+    * 
+    * Create our srcset attribute for images added into content via tinymce or visual editor
+    * 
+    * NOTE: The function looks at the options config to see which image group has been set as the
+    * 		default image size group for post/page content images
+    * 
+    * @return	string	$html
+    * @access 	public
+    * @author	Ben Moody
+    */
     public function add_media_image_tag_srcset( $html, $id, $alt, $title, $align, $size ){
     	
     	//Init vars
-    	$post_group_size 	= 'test'; //Get this from config options once setup
+    	$post_group_size 	= NULL; //Get this from config options self::$class_config['post_img_group']
     	$srcset 			= array();
     	
+    	//Get post image group from config
+    	if( isset(self::$class_config['post_img_group']) && !empty(self::$class_config['post_img_group']) ) {
+	    	$post_group_size = self::$class_config['post_img_group'];
+    	}
+    	
     	//Confirm that post group size is setup in config
-    	if( isset(self::$class_config[$post_group_size]) ) {
+    	if( isset(self::$class_config['img_groups'][$post_group_size]) ) {
 	    	
 	    	//Loop group sizes
-	    	foreach( self::$class_config[$post_group_size] as $breakpoint => $image_data ) {
+	    	foreach( self::$class_config['img_groups'][$post_group_size] as $breakpoint => $image_data ) {
 		    	
 		    	//Cache unique image name based on group title and breakpoint
 			    $image_name = "{$post_group_size}-{$breakpoint}";
@@ -245,6 +301,21 @@ class PrsoSrcSet {
         return $html;
     }
     
+    /**
+    * register_image_sizes
+    *
+    * @Called By: $this->init_plugin()
+    * 
+    * Loop all image groups in congif options. Creating new image sizes in wordpress api for each
+    * breakpoint within that image group
+    * 
+    * NOTE: Also handles Retina (x2) images if user has marked group as such.
+    *		If marked as retina the supplied size is assumed to be the x2 version. So we register this
+    *		then also register a x1 version at 1/2 the width and height.
+    * 
+    * @access 	private
+    * @author	Ben Moody
+    */
     private function register_image_sizes() {
 	    
 	    //Init vars
@@ -253,9 +324,9 @@ class PrsoSrcSet {
 	    $image_h	= NULL;
 	    
 	    //Loop image groups and setup image sizes
-	    if( !empty(self::$class_config) && is_array(self::$class_config) ) {
+	    if( !empty(self::$class_config['img_groups']) && is_array(self::$class_config['img_groups']) ) {
 		    
-		    foreach( self::$class_config as $group_title => $breakpoint_sizes ) {
+		    foreach( self::$class_config['img_groups'] as $group_title => $breakpoint_sizes ) {
 		    
 			    //Loop breakpoint image sizes in this group
 			    if( !empty($breakpoint_sizes) ) {
@@ -301,9 +372,9 @@ class PrsoSrcSet {
     public function prevent_resize_on_upload( $sizes ) {
 	    
 	    //Loop image groups and setup image sizes
-	    if( !empty(self::$class_config) && is_array(self::$class_config) ) {
+	    if( !empty(self::$class_config['img_groups']) && is_array(self::$class_config['img_groups']) ) {
 		    
-		    foreach( self::$class_config as $group_title => $breakpoint_sizes ) {
+		    foreach( self::$class_config['img_groups'] as $group_title => $breakpoint_sizes ) {
 		    
 			    //Loop breakpoint image sizes in this group
 			    if( !empty($breakpoint_sizes) ) {

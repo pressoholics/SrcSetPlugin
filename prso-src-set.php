@@ -41,6 +41,13 @@ function prso_src_set_init() {
 	
 	//Build config array for each instance of rater
 	if( isset($prso_src_set_options['img_groups_instances']) ) {
+		
+		//First, set global options
+		if( isset($prso_src_set_options['post_img_group']) ) {
+			$config_options['post_img_group'] = $prso_src_set_options['post_img_group'];
+		}
+		
+		//Loop all image group sizes
 		foreach( $prso_src_set_options['img_groups_instances'] as $group_title ) {
 		
 			$_group_slug = hash("crc32b", $group_title);
@@ -50,7 +57,7 @@ function prso_src_set_init() {
 				
 				$_break_point = $prso_src_set_options['bp_sm_'.$_group_slug];
 				
-				$config_options[$group_title][$_break_point] = array(
+				$config_options['img_groups'][$group_title][$_break_point] = array(
 					'w'				=>	$prso_src_set_options['imgw_sm_'.$_group_slug],
 					'h'				=>	$prso_src_set_options['imgh_sm_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,
@@ -65,7 +72,7 @@ function prso_src_set_init() {
 				
 				$_break_point = $prso_src_set_options['bp_med_'.$_group_slug];
 				
-				$config_options[$group_title][$_break_point] = array(
+				$config_options['img_groups'][$group_title][$_break_point] = array(
 					'w'				=>	$prso_src_set_options['imgw_med_'.$_group_slug],
 					'h'				=>	$prso_src_set_options['imgh_med_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,
@@ -79,7 +86,7 @@ function prso_src_set_init() {
 				
 				$_break_point = $prso_src_set_options['bp_lg_'.$_group_slug];
 				
-				$config_options[$group_title][$_break_point] = array(
+				$config_options['img_groups'][$group_title][$_break_point] = array(
 					'w'				=>	$prso_src_set_options['imgw_lg_'.$_group_slug],
 					'h'				=>	$prso_src_set_options['imgh_lg_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,
@@ -93,7 +100,7 @@ function prso_src_set_init() {
 				
 				$_break_point = $prso_src_set_options['bp_xl_'.$_group_slug];
 				
-				$config_options[$group_title][$_break_point] = array(
+				$config_options['img_groups'][$group_title][$_break_point] = array(
 					'w'				=>	$prso_src_set_options['imgw_xl_'.$_group_slug],
 					'h'				=>	$prso_src_set_options['imgh_xl_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,

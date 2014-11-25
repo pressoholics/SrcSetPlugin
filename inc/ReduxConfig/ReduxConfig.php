@@ -253,7 +253,29 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 			}
 
 
+			//Add dropdown to select which group to use for post content
+			global $prso_src_set_options;
+			$post_group_select 	= array();
 
+			if( isset($prso_src_set_options['img_groups_instances']) && !empty($prso_src_set_options['img_groups_instances']) ){
+				
+				//INit vars
+				$group_select		= array();
+				
+				foreach( $prso_src_set_options['img_groups_instances'] as $_img_group ) {
+					$group_select[$_img_group] = $_img_group;
+				}
+				
+				$post_group_select = array(
+					'id'       => 'post_img_group',
+				    'type'     => 'select',
+				    'title'    => __('Post Content Group', $this->text_domain),
+				    'subtitle' => __('Image size group used when users insert images into post content', $this->text_domain),
+				    'desc'     => __('Select group to use for post/page content', $this->text_domain),
+				    // Must provide key => value pairs for select options
+				    'options'  => $group_select,
+				);
+			}
 
 			// ACTUAL DECLARATION OF SECTIONS
 			$this->sections[] = array(
@@ -269,12 +291,12 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						'validate' => 'no_special_chars',
 						'subtitle' => __('Add and remove image groups. Enter title for each group then click "Save Changes" to create options more options for each group.', $this->text_domain),
 						'desc' => __('Add unique title for each group. Tip: Keep it short', $this->text_domain)
-					)
+					),
+					$post_group_select
 				)
 			);
 			
 			//Check for number of instances requested and build options for each
-			global $prso_src_set_options;
 			if( isset($prso_src_set_options['img_groups_instances']) ){
 				
 				//Loop each instance and setup options table for each

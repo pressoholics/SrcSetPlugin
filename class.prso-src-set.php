@@ -21,9 +21,6 @@ class PrsoSrcSet {
 		add_action( 'admin_init', array($this, 'admin_init_plugin') );
 		add_action( 'current_screen', array($this, 'current_screen_init_plugin') );
 		
-		// Attachment image attribute filter
-		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_image_srcset' ), 10, 2 );
-		// add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 10, 2 );
 	}
 	
 	/**
@@ -72,6 +69,19 @@ class PrsoSrcSet {
 			$this->load_redux_options_framework();
 			
 		}
+		
+		//Register image sizes based on groups in config
+		$this->register_image_sizes();
+		
+		//Prevent our custom image sizes being created by default when images are uploaded to media library
+		add_filter('intermediate_image_sizes_advanced', array($this, 'prevent_resize_on_upload'));
+		
+		//Dynamically create our image thumbnails only when they are first requested on the front end
+		add_filter('image_downsize', array($this, 'downsize_image_on_first_use'), 10, 3);
+		
+		// Attachment image attribute filter
+		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_image_srcset' ), 10, 2 );
+		// add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 10, 2 );
 		
 	}
 	
@@ -133,18 +143,186 @@ class PrsoSrcSet {
      * TODO: Build in checks for the image group to use.
      */
     function add_image_srcset( $attr, $attachment ) {
+    
 		$srcset = array();
 		
-		foreach ( self::$class_config['Default'] as $breakpoint  => $attributes ) {
-			$attachment_src = wp_get_attachment_image_src( $attachment->ID, array( $attributes['w'], $attributes['h'] ) );
-			$srcset[] = $attachment_src[0] . " {$breakpoint}w";
-		}
-		$attr['srcset'] = join(',', $srcset );
+		//Loop image groups and setup image sizes
+	    if( !empty(self::$class_config) && is_array(self::$class_config) ) {
+		    
+		    foreach( self::$class_config as $group_title => $breakpoint_sizes ) {
+		    
+			    //Loop breakpoint image sizes in this group
+			    if( !empty($breakpoint_sizes) ) {
+			    
+				    foreach( $breakpoint_sizes as $breakpoint => $image_data ) {
+					    
+					    //Cache unique image name based on group title and breakpoint
+					    $image_name = "{$group_title}-{$breakpoint}";
+					    
+					    //Check if this is a retina image create a x1 version as well as x2
+					    if( (bool)$image_data['retina'] === TRUE ) {
+						    
+						    //x2 (use original size supplied by user)
+						    $image_name = "{$group_title}-{$breakpoint}-@2";
+						    
+						    //Add regular version
+							$_attachment_src = wp_get_attachment_image_src( $attachment->ID, $image_name );
+							
+							//Check image size exists
+							if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
+								$srcset[] = $_attachment_src[0] . " {$breakpoint}w 2x";
+							}
+						    
+					    }
+						    
+						//Add regular version
+						$_attachment_src = wp_get_attachment_image_src( $attachment->ID, $image_name );
+						
+						if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
+							$srcset[] = $_attachment_src[0] . " {$breakpoint}w";
+						}
+					    
+				    }
+				    
+			    }
+			    
+		    }
+		    
+		    if( !empty($srcset) ) {
+			    $attr['srcset'] = join(',', $srcset );
+		    }
+	    }
+		
         return $attr;
     }
 
     function add_media_image_tag_srcset( $html, $attachment_id ){
         //return str_replace( '/>', 'srcset=""/>', $html );
+    }
+    
+    private function register_image_sizes() {
+	    
+	    //Init vars
+	    $image_name = NULL;
+	    $image_w	= NULL;
+	    $image_h	= NULL;
+	    
+	    //Loop image groups and setup image sizes
+	    if( !empty(self::$class_config) && is_array(self::$class_config) ) {
+		    
+		    foreach( self::$class_config as $group_title => $breakpoint_sizes ) {
+		    
+			    //Loop breakpoint image sizes in this group
+			    if( !empty($breakpoint_sizes) ) {
+			    
+				    foreach( $breakpoint_sizes as $breakpoint => $image_data ) {
+					    
+					    //Cache unique image name based on group title and breakpoint
+					    $image_name = "{$group_title}-{$breakpoint}";
+					    
+					    //Check if this is a retina image create a x1 version as well as x2
+					    if( (bool)$image_data['retina'] === TRUE ) {
+						    
+						    //x1
+						    add_image_size( $image_name, ($image_data['w']/2), ($image_data['h']/2), TRUE );
+						    
+						    //x2 (use original size supplied by user)
+						    $image_name = "{$group_title}-{$breakpoint}-@2";
+						    add_image_size( $image_name, $image_data['w'], $image_data['h'], TRUE );
+						    
+					    } else {
+						    
+						    //Add regular version
+						    add_image_size( $image_name, $image_data['w'], $image_data['h'], TRUE );
+						    
+					    }
+					    
+				    }
+				    
+			    }
+			    
+		    }
+		    
+	    }
+	    
+    }
+    
+    public function prevent_resize_on_upload( $sizes ) {
+	    
+	    //Loop image groups and setup image sizes
+	    if( !empty(self::$class_config) && is_array(self::$class_config) ) {
+		    
+		    foreach( self::$class_config as $group_title => $breakpoint_sizes ) {
+		    
+			    //Loop breakpoint image sizes in this group
+			    if( !empty($breakpoint_sizes) ) {
+			    
+				    foreach( $breakpoint_sizes as $breakpoint => $image_data ) {
+					    
+					    //Cache unique image name based on group title and breakpoint
+					    $image_name = "{$group_title}-{$breakpoint}";
+					    
+					    //Unset image size
+					    unset( $sizes[$image_name] );
+					    
+					    //Check if this is a retina image create a x1 version as well as x2
+					    if( (bool) $image_data['retina'] === TRUE ) {
+						    
+						   //Unset retina image size
+						   $image_name = "{$group_title}-{$breakpoint}-@2";
+						   
+						   unset( $sizes[$image_name] );
+						    
+					    }
+					    
+				    }
+				    
+			    }
+			    
+		    }
+		    
+	    }
+	    
+    }
+    
+    public function downsize_image_on_first_use( $out, $id, $size ) {
+	    
+	    //Only process images with a title added via api
+	    if( is_array($size) ) {
+	    	return false;
+	    }
+	    
+	    // If image size exists let WP serve it like normally
+        $imagedata = wp_get_attachment_metadata($id);
+        if (is_array($imagedata) && isset($imagedata['sizes'][$size]))
+            return false;
+
+        // Check that the requested size exists, or abort
+        global $_wp_additional_image_sizes;
+        if( is_array($size) ) {
+	        if (!isset($_wp_additional_image_sizes[$size])) {
+		        return false;
+	        }
+	        return false;
+        }
+        
+        // Make the new thumb
+        if (!$resized = image_make_intermediate_size(
+            get_attached_file($id),
+            $_wp_additional_image_sizes[$size]['width'],
+            $_wp_additional_image_sizes[$size]['height'],
+            $_wp_additional_image_sizes[$size]['crop']
+        ))
+            return false;
+
+        // Save image meta, or WP can't see that the thumb exists now
+        $imagedata['sizes'][$size] = $resized;
+        wp_update_attachment_metadata($id, $imagedata);
+
+        // Return the array for displaying the resized image
+        $att_url = wp_get_attachment_url($id);
+        return array(dirname($att_url) . '/' . $resized['file'], $resized['width'], $resized['height'], true);
+	    
     }
 
         

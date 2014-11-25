@@ -74,14 +74,15 @@ class PrsoSrcSet {
 		$this->register_image_sizes();
 		
 		//Prevent our custom image sizes being created by default when images are uploaded to media library
-		add_filter('intermediate_image_sizes_advanced', array($this, 'prevent_resize_on_upload'));
+		//add_filter('intermediate_image_sizes_advanced', array($this, 'prevent_resize_on_upload'));
 		
 		//Dynamically create our image thumbnails only when they are first requested on the front end
-		add_filter('image_downsize', array($this, 'downsize_image_on_first_use'), 10, 3);
+		//add_filter('image_downsize', array($this, 'downsize_image_on_first_use'), 10, 3);
 		
 		// Attachment image attribute filter
-		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_image_srcset' ), 10, 2 );
-		// add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 10, 2 );
+		add_filter( 'post_thumbnail_html', array( $this, 'add_image_srcset' ), 10, 5 );
+		//add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_image_srcset' ), 10, 2 );
+		//add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 10, 6 );
 		
 	}
 	
@@ -138,66 +139,67 @@ class PrsoSrcSet {
 	
 	
     /**
-     * Create our srcset attribute
+     * Create our srcset attribute for images called via get_the_post_thumbnail(), ect
      * 
-     * TODO: Build in checks for the image group to use.
-     */
-    function add_image_srcset( $attr, $attachment ) {
-    
-		$srcset = array();
-		
-		//Loop image groups and setup image sizes
-	    if( !empty(self::$class_config) && is_array(self::$class_config) ) {
-		    
-		    foreach( self::$class_config as $group_title => $breakpoint_sizes ) {
-		    
-			    //Loop breakpoint image sizes in this group
-			    if( !empty($breakpoint_sizes) ) {
+     * Called by Filter: post_thumbnail_html
+     *
+     */	
+	function add_image_srcset( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
+    	
+    	$srcset = array();
+    	
+    	//Check if requested size is one of our image groups
+    	if( isset(self::$class_config[$size]) ) {
+	    	
+	    	//Loop group sizes
+	    	foreach( self::$class_config[$size] as $breakpoint => $image_data ) {
+		    	
+		    	//Cache unique image name based on group title and breakpoint
+			    $image_name = "{$size}-{$breakpoint}";
 			    
-				    foreach( $breakpoint_sizes as $breakpoint => $image_data ) {
-					    
-					    //Cache unique image name based on group title and breakpoint
-					    $image_name = "{$group_title}-{$breakpoint}";
-					    
-					    //Check if this is a retina image create a x1 version as well as x2
-					    if( (bool)$image_data['retina'] === TRUE ) {
-						    
-						    //x2 (use original size supplied by user)
-						    $image_name = "{$group_title}-{$breakpoint}-@2";
-						    
-						    //Add regular version
-							$_attachment_src = wp_get_attachment_image_src( $attachment->ID, $image_name );
-							
-							//Check image size exists
-							if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
-								$srcset[] = $_attachment_src[0] . " {$breakpoint}w 2x";
-							}
-						    
-					    }
-						    
-						//Add regular version
-						$_attachment_src = wp_get_attachment_image_src( $attachment->ID, $image_name );
-						
-						if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
-							$srcset[] = $_attachment_src[0] . " {$breakpoint}w";
-						}
-					    
-				    }
+			    //Check if this is a retina image create a x1 version as well as x2
+			    if( (bool)$image_data['retina'] === TRUE ) {
+				    
+				    //x2 (use original size supplied by user)
+				    $image_name = "{$size}-{$breakpoint}-@2";
+				    
+				    //Add regular version
+					$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
+					
+					//Check image size exists
+					if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
+						$srcset[] = $_attachment_src[0] . " {$breakpoint}w 2x";
+					}
 				    
 			    }
-			    
-		    }
-		    
-		    if( !empty($srcset) ) {
-			    $attr['srcset'] = join(',', $srcset );
-		    }
-	    }
+				    
+				//Add regular version
+				$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
+				
+				if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
+					$srcset[] = $_attachment_src[0] . " {$breakpoint}w";
+				}
+		    	
+	    	}
+	    	
+	    	//Splice srcset into html output
+	    	if( !empty($srcset) ) {
+	    		$_srcset = join(',', $srcset );
+		    	$html = str_replace( '/>', 'srcset="'.$_srcset.'"/>', $html );
+	    	}
+	    	
+    	}
 		
-        return $attr;
+        return $html;
     }
-
-    function add_media_image_tag_srcset( $html, $attachment_id ){
+	
+    public function add_media_image_tag_srcset( $html, $id, $alt, $title, $align, $size ){
+    	
+    	prso_debug($size);
+    	exit();
+    	
         //return str_replace( '/>', 'srcset=""/>', $html );
+        
     }
     
     private function register_image_sizes() {
@@ -247,6 +249,12 @@ class PrsoSrcSet {
 	    
     }
     
+    /**
+     * Would prevent srcset custom sizes being generated on image upload
+     *
+     * Needs work.
+     *
+     */	
     public function prevent_resize_on_upload( $sizes ) {
 	    
 	    //Loop image groups and setup image sizes
@@ -285,6 +293,12 @@ class PrsoSrcSet {
 	    
     }
     
+    /**
+     * Would resize srcset image thumbnails only on first use of size
+     *
+     * Needs work.
+     *
+     */	
     public function downsize_image_on_first_use( $out, $id, $size ) {
 	    
 	    //Only process images with a title added via api
@@ -303,6 +317,10 @@ class PrsoSrcSet {
 	        if (!isset($_wp_additional_image_sizes[$size])) {
 		        return false;
 	        }
+	        return false;
+        }
+        
+        if( !isset($_wp_additional_image_sizes[$size]) ) {
 	        return false;
         }
         

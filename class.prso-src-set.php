@@ -81,8 +81,9 @@ class PrsoSrcSet {
 		
 		// Attachment image attribute filter
 		add_filter( 'post_thumbnail_html', array( $this, 'add_image_srcset' ), 10, 5 );
-		//add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_image_srcset' ), 10, 2 );
+		
 		//add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 10, 6 );
+		add_filter( 'image_send_to_editor', array( $this, 'add_media_image_tag_srcset' ), 999, 6 );
 		
 	}
 	
@@ -195,11 +196,53 @@ class PrsoSrcSet {
 	
     public function add_media_image_tag_srcset( $html, $id, $alt, $title, $align, $size ){
     	
-    	prso_debug($size);
-    	exit();
+    	//Init vars
+    	$post_group_size 	= 'test'; //Get this from config options once setup
+    	$srcset 			= array();
     	
-        //return str_replace( '/>', 'srcset=""/>', $html );
-        
+    	//Confirm that post group size is setup in config
+    	if( isset(self::$class_config[$post_group_size]) ) {
+	    	
+	    	//Loop group sizes
+	    	foreach( self::$class_config[$post_group_size] as $breakpoint => $image_data ) {
+		    	
+		    	//Cache unique image name based on group title and breakpoint
+			    $image_name = "{$post_group_size}-{$breakpoint}";
+			    
+			    //Check if this is a retina image create a x1 version as well as x2
+			    if( (bool)$image_data['retina'] === TRUE ) {
+				    
+				    //x2 (use original size supplied by user)
+				    $image_name = "{$post_group_size}-{$breakpoint}-@2";
+				    
+				    //Add regular version
+					$_attachment_src = wp_get_attachment_image_src( $id, $image_name );
+					
+					//Check image size exists
+					if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
+						$srcset[] = $_attachment_src[0] . " {$breakpoint}w 2x";
+					}
+				    
+			    }
+				    
+				//Add regular version
+				$_attachment_src = wp_get_attachment_image_src( $id, $image_name );
+				
+				if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
+					$srcset[] = $_attachment_src[0] . " {$breakpoint}w";
+				}
+		    	
+	    	}
+	    	
+	    	//Splice srcset into html output
+	    	if( !empty($srcset) ) {
+	    		$_srcset = join(',', $srcset );
+		    	$html = str_replace( '/>', 'srcset="'.$_srcset.'"/>', $html );
+	    	}
+	    	
+    	}
+		
+        return $html;
     }
     
     private function register_image_sizes() {

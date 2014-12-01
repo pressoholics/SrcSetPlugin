@@ -77,7 +77,6 @@ class PrsoSrcSet {
 		add_filter( 'post_thumbnail_html', array( $this, 'add_image_srcset' ), 10, 5 );
 		
 		//Attachment image attribute filter -- filters img tags added via tinymce content editor
-		add_filter( 'get_image_tag', array( $this, 'add_media_image_tag_srcset' ), 999, 6 );
 		add_filter( 'image_send_to_editor', array( $this, 'add_media_image_tag_srcset' ), 999, 6 );
 		
 		//Filter TINYMCE allowed attributes for img tag

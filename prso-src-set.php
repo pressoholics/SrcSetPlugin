@@ -52,6 +52,8 @@ function prso_src_set_init() {
 		
 			$_group_slug = hash("crc32b", $group_title);
 			
+			$_group_title = sanitize_title( $group_title );
+			
 			//Small breakpoint
 			if( isset($prso_src_set_options['fullsz_sm_'.$_group_slug]) && ($prso_src_set_options['fullsz_sm_'.$_group_slug] == 0) ) {
 				

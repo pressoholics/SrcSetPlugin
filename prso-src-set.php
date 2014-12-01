@@ -23,7 +23,8 @@ define( 'PRSOSRCSET__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PRSOSRCSET__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 //Include plugin classes
-require_once( PRSOSRCSET__PLUGIN_DIR . 'class.prso-src-set.php'               );
+require_once( PRSOSRCSET__PLUGIN_DIR . 'class.prso-src-set.php' );
+require_once( PRSOSRCSET__PLUGIN_DIR . 'inc/class.prso-src-set-regen.php' );
 
 //Set Activation/Deactivation hooks
 register_activation_hook( __FILE__, array( 'PrsoSrcSet', 'plugin_activation' ) );

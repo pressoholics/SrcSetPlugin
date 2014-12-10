@@ -23,7 +23,9 @@ class PrsoSrcSetRegen {
 			array( $this, 'regen_srcset_page' ) );
 	}
 	
-	function regen_srcset_page() { ?>
+	function regen_srcset_page() { 
+		global $post;
+		?>
 	<div id="wrap">
 		<h2>SrcSet Regeneration</h2>
 		<p><strong>Warning:</strong> This feature is experimental. It is required that you understand the consequences of directly manipulating page content.</p>
@@ -43,7 +45,36 @@ class PrsoSrcSetRegen {
 		<pre><?php echo esc_html('size-(\w+)' ) ?></pre>
 		<p>Enhanced version:
 		<pre><?php echo esc_html('class=\"[\w\W]*?size-(\w+)[\w\W]*?\"' ) ?></pre>
-		
+		<?php
+		$query_args = array(
+			'post_type' => 'any',
+			'posts_per_page' => -1
+		);
+		$query = new WP_Query( $query_args );
+		// echo '<pre>', print_r( $query, true ), '</pre>';
+		?>
+		<br/>
+		<h3>Total Posts: <?php echo $query->post_count ?></h3>
+		<?php
+		while ( $query->have_posts() ) {
+			$query->the_post();
+			$has_images = preg_match_all( '(<img[\w\W]+?>)', $post->post_content, $images );
+			?>
+		<h5>Post (ID <?php the_ID() ?>): <?php the_title() ?></h5>
+		<p><?php echo $has_images ? 'Has matches: ' . count( $images ) : 'No matches' ?></p>
+			<?php
+			foreach ( $images as $image ) {
+				echo '<pre>', esc_html( $image[0] ), '</pre>';
+				$is_attachment = preg_match( '/class=\"[\w\W]*?wp-image-(\d+)[\w\W]*?\"/', $image[0], $id_matches );
+				if ( $is_attachment ) {
+					echo '<p> Attachment ID is ', $id_matches[1];
+				
+					$attachment = wp_get_attachment_metadata( $id_matches[1] );
+					// todo: generate srcset
+				}
+			}
+		}
+		?>
 		<?php } else { ?>
 		<a class="button-primary" href="<?php echo add_query_arg('start', 1 ) ?>">Regenerate srcset in post content</a>
 		<?php } ?>

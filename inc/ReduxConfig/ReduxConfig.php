@@ -304,12 +304,28 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 					
 					$_group_slug = hash("crc32b", $group_title);
 					
+					//Create array of image sizes to use in a select menu
+					$reg_img_sizes 	= get_intermediate_image_sizes();
+					$img_sizes 		= array( 'full' => 'Full Size', 'custom' => 'Custom' );
+					foreach( $reg_img_sizes as $size_slug ) {
+						$img_sizes[$size_slug] = $size_slug;
+					}
+					
 					$this->sections[] = array(
 						'title' => __(ucfirst($group_title).' Group', $this->text_domain),
 						'desc' => __('Setup image sizes for all breakpoints in this group', $this->text_domain),
 						'icon' => 'el-icon-cogs',
 					    // 'submenu' => false, // Setting submenu to false on a given section will hide it from the WordPress sidebar menu!
 						'fields' => array(
+							
+							array(
+							    'id'    => 'info_success',
+							    'type'  => 'info',
+							    'style' => 'success',
+							    'title' => __('Did you know?', 'redux-framework-demo'),
+							    'icon'  => 'el-icon-info-sign',
+							    'desc'  => sprintf( __( 'You can manually place srcset images into your theme or code using the Wordpress API: <br/>E.G. the_post_thumbnail( "%1$s" ) OR get_the_post_thumbnail( $post_id, "%1$s" )', $this->text_domain ), sanitize_title($group_title) )
+							),
 							
 							array(
 								'id'=>'size_select'.$_group_slug,
@@ -325,7 +341,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 								'id'=>'sec_sm_srt_'.$_group_slug,
 								'type' => 'section', 
 								'required' => array('size_select'.$_group_slug,'=','small'),
-								'title' => __('Small Breakpoint', $this->text_domain),                            
+								'title' => '',                            
 								'indent' => true // Indent all options below until the next 'section' option is set.
 							),
 							
@@ -333,58 +349,57 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						        array(
 									'id'=>'bp_sm_'.$_group_slug,
 									'type' => 'slider', 
-									'title' => __('Breakpoint', $this->text_domain),
+									'title' => __('Breakpoint Width', $this->text_domain),
 									'desc'=> __('Breakpoint in px', $this->text_domain),
 									"default" 	=> "640",
-									"min" 		=> "0",
+									"min" 		=> "1",
 									"step"		=> "1",
 									"max" 		=> "2000",
 								),
 								
 								array(
-									'id'=>'fullsz_sm_'.$_group_slug,
-									'type' => 'switch', 
-									'title' => __('Use full size image', $this->text_domain),
-									"default" 		=> 1,
-									'on' 	=> 'Full Size',
-									'off' 	=> 'Custom Size',
+									'id'=>'x2_sm_'.$_group_slug,
+									'type' => 'switch',
+									'title' => __('Activate Retina (x2)', $this->text_domain),
+									'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
+									"default" 		=> false,
 								),
-									
-									array(
-										'id'=>'x2_sm_'.$_group_slug,
-										'type' => 'switch', 
-										'required' => array('fullsz_sm_'.$_group_slug,'=','0'),
-										'title' => __('Activate Retina (x2)', $this->text_domain),
-										'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
-										"default" 		=> 0,
-										'on' 			=> 'Enabled',
-										'off' 			=> 'Disabled',
-									),
-									
-									//Image Width
-							        array(
-										'id'=>'imgw_sm_'.$_group_slug,
-										'type' => 'slider', 
-										'required' => array('fullsz_sm_'.$_group_slug,'=','0'),
-										'title' => __('Image Width', $this->text_domain),
-										'desc'=> __('Image width in px', $this->text_domain),
-										"default" 	=> "640",
-										"min" 		=> "0",
-										"step"		=> "1",
-										"max" 		=> "5000",
-									),
-									
-									array(
-										'id'=>'imgh_sm_'.$_group_slug,
-										'type' => 'slider', 
-										'required' => array('fullsz_sm_'.$_group_slug,'=','0'),
-										'title' => __('Image Height', $this->text_domain),
-										'desc'=> __('Image height in px', $this->text_domain),
-										"default" 	=> "640",
-										"min" 		=> "0",
-										"step"		=> "1",
-										"max" 		=> "5000",
-									),
+								
+								array(
+								    'id'       => 'fullsz_sm_'.$_group_slug,
+								    'type'     => 'select',
+								    'title'    => __('Intermidiate Image Size', $this->text_domain),
+								    'subtitle' => __('Select image size to use for this breakpoint', $this->text_domain),
+								    'desc'     => __('You can select an existing custom image size or choose Custom to create a new image size.', $this->text_domain),
+								    // Must provide key => value pairs for select options
+								    'options'  => $img_sizes,
+								    'default'  => 'full',
+								),
+								
+								//Image Width
+						        array(
+									'id'=>'imgw_sm_'.$_group_slug,
+									'type' => 'slider', 
+									'required' => array('fullsz_sm_'.$_group_slug,'=','custom'),
+									'title' => __('Image Width', $this->text_domain),
+									'desc'=> __('Image width in px', $this->text_domain),
+									"default" 	=> "1920",
+									"min" 		=> "1",
+									"step"		=> "1",
+									"max" 		=> "5000",
+								),
+								
+								array(
+									'id'=>'imgh_sm_'.$_group_slug,
+									'type' => 'slider', 
+									'required' => array('fullsz_sm_'.$_group_slug,'=','custom'),
+									'title' => __('Image Height', $this->text_domain),
+									'desc'=> __('Image height in px', $this->text_domain),
+									"default" 	=> "1920",
+									"min" 		=> "1",
+									"step"		=> "1",
+									"max" 		=> "5000",
+								),
 								
 							array(
 								'id'=>'sec_sm_end_'.$_group_slug,
@@ -400,7 +415,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 								'id'=>'sec_med_srt_'.$_group_slug,
 								'type' => 'section', 
 								'required' => array('size_select'.$_group_slug,'=','medium'),
-								'title' => __('Medium Breakpoint', $this->text_domain),                            
+								'title' => '',                            
 								'indent' => true // Indent all options below until the next 'section' option is set.
 							),
 							
@@ -408,58 +423,57 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						        array(
 									'id'=>'bp_med_'.$_group_slug,
 									'type' => 'slider', 
-									'title' => __('Breakpoint', $this->text_domain),
+									'title' => __('Breakpoint Width', $this->text_domain),
 									'desc'=> __('Breakpoint in px', $this->text_domain),
-									"default" 	=> "641",
-									"min" 		=> "0",
+									"default" 	=> "1024",
+									"min" 		=> "1",
 									"step"		=> "1",
 									"max" 		=> "2000",
 								),
 								
 								array(
-									'id'=>'fullsz_med_'.$_group_slug,
-									'type' => 'switch', 
-									'title' => __('Use full size image', $this->text_domain),
-									"default" 		=> 1,
-									'on' 	=> 'Full Size',
-									'off' 	=> 'Custom Size',
+									'id'=>'x2_med_'.$_group_slug,
+									'type' => 'switch',
+									'title' => __('Activate Retina (x2)', $this->text_domain),
+									'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
+									"default" 		=> false,
 								),
-									
-									array(
-										'id'=>'x2_med_'.$_group_slug,
-										'type' => 'switch', 
-										'required' => array('fullsz_sm_'.$_group_slug,'=','0'),
-										'title' => __('Activate Retina (x2)', $this->text_domain),
-										'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
-										"default" 		=> 0,
-										'on' 			=> 'Enabled',
-										'off' 			=> 'Disabled',
-									),
-									
-									//Image Width
-							        array(
-										'id'=>'imgw_med_'.$_group_slug,
-										'type' => 'slider', 
-										'required' => array('fullsz_med_'.$_group_slug,'=','0'),
-										'title' => __('Image Width', $this->text_domain),
-										'desc'=> __('Image width in px', $this->text_domain),
-										"default" 	=> "1024",
-										"min" 		=> "0",
-										"step"		=> "1",
-										"max" 		=> "5000",
-									),
-									
-									array(
-										'id'=>'imgh_med_'.$_group_slug,
-										'type' => 'slider', 
-										'required' => array('fullsz_med_'.$_group_slug,'=','0'),
-										'title' => __('Image Height', $this->text_domain),
-										'desc'=> __('Image height in px', $this->text_domain),
-										"default" 	=> "1024",
-										"min" 		=> "0",
-										"step"		=> "1",
-										"max" 		=> "5000",
-									),
+								
+								array(
+								    'id'       => 'fullsz_med_'.$_group_slug,
+								    'type'     => 'select',
+								    'title'    => __('Intermidiate Image Size', $this->text_domain),
+								    'subtitle' => __('Select image size to use for this breakpoint', $this->text_domain),
+								    'desc'     => __('You can select an existing custom image size or choose Custom to create a new image size.', $this->text_domain),
+								    // Must provide key => value pairs for select options
+								    'options'  => $img_sizes,
+								    'default'  => 'full',
+								),
+								
+								//Image Width
+						        array(
+									'id'=>'imgw_med_'.$_group_slug,
+									'type' => 'slider', 
+									'required' => array('fullsz_med_'.$_group_slug,'=','custom'),
+									'title' => __('Image Width', $this->text_domain),
+									'desc'=> __('Image width in px', $this->text_domain),
+									"default" 	=> "1920",
+									"min" 		=> "1",
+									"step"		=> "1",
+									"max" 		=> "5000",
+								),
+								
+								array(
+									'id'=>'imgh_med_'.$_group_slug,
+									'type' => 'slider', 
+									'required' => array('fullsz_med_'.$_group_slug,'=','custom'),
+									'title' => __('Image Height', $this->text_domain),
+									'desc'=> __('Image height in px', $this->text_domain),
+									"default" 	=> "1920",
+									"min" 		=> "1",
+									"step"		=> "1",
+									"max" 		=> "5000",
+								),
 								
 							array(
 								'id'=>'sec_med_end_'.$_group_slug,
@@ -474,7 +488,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 								'id'=>'sec_lg_srt_'.$_group_slug,
 								'type' => 'section', 
 								'required' => array('size_select'.$_group_slug,'=','large'),
-								'title' => __('Large Breakpoint', $this->text_domain),                            
+								'title' => '',                            
 								'indent' => true // Indent all options below until the next 'section' option is set.
 							),
 							
@@ -482,59 +496,57 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						        array(
 									'id'=>'bp_lg_'.$_group_slug,
 									'type' => 'slider', 
-									'title' => __('Breakpoint', $this->text_domain),
+									'title' => __('Breakpoint Width', $this->text_domain),
 									'desc'=> __('Breakpoint in px', $this->text_domain),
-									"default" 	=> "1025",
-									"min" 		=> "0",
+									"default" 	=> "1440",
+									"min" 		=> "1",
 									"step"		=> "1",
 									"max" 		=> "2000",
 								),
 								
 								array(
-									'id'=>'fullsz_lg_'.$_group_slug,
-									'type' => 'switch', 
-									'title' => __('Use full size image', $this->text_domain),
-									"default" 		=> 1,
-									'on' 	=> 'Full Size',
-									'off' 	=> 'Custom Size',
+									'id'=>'x2_lg_'.$_group_slug,
+									'type' => 'switch',
+									'title' => __('Activate Retina (x2)', $this->text_domain),
+									'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
+									"default" 		=> false,
 								),
 								
-									
-									array(
-										'id'=>'x2_lg_'.$_group_slug,
-										'type' => 'switch', 
-										'required' => array('fullsz_sm_'.$_group_slug,'=','0'),
-										'title' => __('Activate Retina (x2)', $this->text_domain),
-										'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
-										"default" 		=> 0,
-										'on' 			=> 'Enabled',
-										'off' 			=> 'Disabled',
-									),
-									
-									//Image Width
-							        array(
-										'id'=>'imgw_lg_'.$_group_slug,
-										'type' => 'slider', 
-										'required' => array('fullsz_lg_'.$_group_slug,'=','0'),
-										'title' => __('Image Width', $this->text_domain),
-										'desc'=> __('Image width in px', $this->text_domain),
-										"default" 	=> "1440",
-										"min" 		=> "0",
-										"step"		=> "1",
-										"max" 		=> "5000",
-									),
-									
-									array(
-										'id'=>'imgh_lg_'.$_group_slug,
-										'type' => 'slider', 
-										'required' => array('fullsz_lg_'.$_group_slug,'=','0'),
-										'title' => __('Image Height', $this->text_domain),
-										'desc'=> __('Image height in px', $this->text_domain),
-										"default" 	=> "1440",
-										"min" 		=> "0",
-										"step"		=> "1",
-										"max" 		=> "5000",
-									),
+								array(
+								    'id'       => 'fullsz_lg_'.$_group_slug,
+								    'type'     => 'select',
+								    'title'    => __('Intermidiate Image Size', $this->text_domain),
+								    'subtitle' => __('Select image size to use for this breakpoint', $this->text_domain),
+								    'desc'     => __('You can select an existing custom image size or choose Custom to create a new image size.', $this->text_domain),
+								    // Must provide key => value pairs for select options
+								    'options'  => $img_sizes,
+								    'default'  => 'full',
+								),
+								
+								//Image Width
+						        array(
+									'id'=>'imgw_lg_'.$_group_slug,
+									'type' => 'slider', 
+									'required' => array('fullsz_lg_'.$_group_slug,'=','custom'),
+									'title' => __('Image Width', $this->text_domain),
+									'desc'=> __('Image width in px', $this->text_domain),
+									"default" 	=> "1920",
+									"min" 		=> "1",
+									"step"		=> "1",
+									"max" 		=> "5000",
+								),
+								
+								array(
+									'id'=>'imgh_lg_'.$_group_slug,
+									'type' => 'slider', 
+									'required' => array('fullsz_lg_'.$_group_slug,'=','custom'),
+									'title' => __('Image Height', $this->text_domain),
+									'desc'=> __('Image height in px', $this->text_domain),
+									"default" 	=> "1920",
+									"min" 		=> "1",
+									"step"		=> "1",
+									"max" 		=> "5000",
+								),
 								
 							array(
 								'id'=>'sec_lg_end_'.$_group_slug,
@@ -542,14 +554,12 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 								'indent' => false // Indent all options below until the next 'section' option is set.
 							),
 							
-							
-							
 							/** X Large breakpoint section **/
 							array(
 								'id'=>'sec_xl_srt_'.$_group_slug,
 								'type' => 'section', 
 								'required' => array('size_select'.$_group_slug,'=','xlarge'),
-								'title' => __('Extra Large Breakpoint', $this->text_domain),                            
+								'title' => '',                            
 								'indent' => true // Indent all options below until the next 'section' option is set.
 							),
 							
@@ -557,58 +567,57 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						        array(
 									'id'=>'bp_xl_'.$_group_slug,
 									'type' => 'slider', 
-									'title' => __('Breakpoint', $this->text_domain),
+									'title' => __('Breakpoint Width', $this->text_domain),
 									'desc'=> __('Breakpoint in px', $this->text_domain),
-									"default" 	=> "1441",
+									"default" 	=> "1920",
 									"min" 		=> "1",
 									"step"		=> "1",
 									"max" 		=> "2000",
 								),
 								
 								array(
-									'id'=>'fullsz_xl_'.$_group_slug,
+									'id'=>'x2_xl_'.$_group_slug,
 									'type' => 'switch', 
-									'title' => __('Use full size image', $this->text_domain),
-									"default" 		=> 1,
-									'on' 	=> 'Full Size',
-									'off' 	=> 'Custom Size',
+									'title' => __('Activate Retina (x2)', $this->text_domain),
+									'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
+									"default" 		=> false,
 								),
-									
-									array(
-										'id'=>'x2_xl_'.$_group_slug,
-										'type' => 'switch', 
-										'required' => array('fullsz_sm_'.$_group_slug,'=','0'),
-										'title' => __('Activate Retina (x2)', $this->text_domain),
-										'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
-										"default" 		=> 0,
-										'on' 			=> 'Enabled',
-										'off' 			=> 'Disabled',
-									),
-									
-									//Image Width
-							        array(
-										'id'=>'imgw_xl_'.$_group_slug,
-										'type' => 'slider', 
-										'required' => array('fullsz_xl_'.$_group_slug,'=','0'),
-										'title' => __('Image Width', $this->text_domain),
-										'desc'=> __('Image width in px', $this->text_domain),
-										"default" 	=> "1920",
-										"min" 		=> "1",
-										"step"		=> "1",
-										"max" 		=> "5000",
-									),
-									
-									array(
-										'id'=>'imgh_xl_'.$_group_slug,
-										'type' => 'slider', 
-										'required' => array('fullsz_xl_'.$_group_slug,'=','0'),
-										'title' => __('Image Height', $this->text_domain),
-										'desc'=> __('Image height in px', $this->text_domain),
-										"default" 	=> "1920",
-										"min" 		=> "1",
-										"step"		=> "1",
-										"max" 		=> "5000",
-									),
+								
+								array(
+								    'id'       => 'fullsz_xl_'.$_group_slug,
+								    'type'     => 'select',
+								    'title'    => __('Intermidiate Image Size', $this->text_domain),
+								    'subtitle' => __('Select image size to use for this breakpoint', $this->text_domain),
+								    'desc'     => __('You can select an existing custom image size or choose Custom to create a new image size.', $this->text_domain),
+								    // Must provide key => value pairs for select options
+								    'options'  => $img_sizes,
+								    'default'  => 'full',
+								),
+								
+								//Image Width
+						        array(
+									'id'=>'imgw_xl_'.$_group_slug,
+									'type' => 'slider', 
+									'required' => array('fullsz_xl_'.$_group_slug,'=','custom'),
+									'title' => __('Image Width', $this->text_domain),
+									'desc'=> __('Image width in px', $this->text_domain),
+									"default" 	=> "1920",
+									"min" 		=> "1",
+									"step"		=> "1",
+									"max" 		=> "5000",
+								),
+								
+								array(
+									'id'=>'imgh_xl_'.$_group_slug,
+									'type' => 'slider', 
+									'required' => array('fullsz_xl_'.$_group_slug,'=','custom'),
+									'title' => __('Image Height', $this->text_domain),
+									'desc'=> __('Image height in px', $this->text_domain),
+									"default" 	=> "1920",
+									"min" 		=> "1",
+									"step"		=> "1",
+									"max" 		=> "5000",
+								),
 								
 							array(
 								'id'=>'sec_xl_end_'.$_group_slug,
@@ -679,8 +688,8 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 	            'page'		 	 		=> __( 'SRCSET Settings', $this->text_domain ),
 	            'google_api_key'   	 	=> '', // Must be defined to add google fonts to the typography module
 	            'global_variable'    	=> '', // Set a different name for your global variable other than the opt_name
-	            'dev_mode'           	=> true, // Show the time the page took to load, etc
-	            'customizer'         	=> true, // Enable basic customizer support
+	            'dev_mode'           	=> false, // Show the time the page took to load, etc
+	            'customizer'         	=> false, // Enable basic customizer support
 
 	            // OPTIONAL -> Give you extra features
 	            'page_priority'      	=> null, // Order where the menu appears in the admin area. If there is any conflict, something will not show. Warning.

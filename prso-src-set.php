@@ -56,50 +56,74 @@ function prso_src_set_init() {
 			$_group_title = sanitize_title( $group_title );
 			
 			//Small breakpoint
-			if( isset($prso_src_set_options['fullsz_sm_'.$_group_slug]) && ($prso_src_set_options['fullsz_sm_'.$_group_slug] == 0) ) {
+			if( isset($prso_src_set_options['fullsz_sm_'.$_group_slug]) && ($prso_src_set_options['fullsz_sm_'.$_group_slug] !== 'full') ) {
 				
 				$_break_point = $prso_src_set_options['bp_sm_'.$_group_slug];
 				
 				$config_options['img_groups'][$group_title][$_break_point] = array(
-					'w'				=>	$prso_src_set_options['imgw_sm_'.$_group_slug],
-					'h'				=>	$prso_src_set_options['imgh_sm_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,
-					'retina'		=>	$prso_src_set_options['x2_sm_'.$_group_slug]
+					'retina'		=>	$prso_src_set_options['x2_sm_'.$_group_slug],
+					'thumb_size'	=>	$prso_src_set_options['fullsz_sm_'.$_group_slug]
 				);
+				
+				//Detect if this is a custom image size and add image width/height
+				if( $prso_src_set_options['fullsz_sm_'.$_group_slug] === 'custom' ) {
+					
+					$config_options['img_groups'][$group_title][$_break_point]['w'] = $prso_src_set_options['imgw_sm_'.$_group_slug];
+					
+					$config_options['img_groups'][$group_title][$_break_point]['h'] = $prso_src_set_options['imgh_sm_'.$_group_slug];
+					
+				}
 				
 			}
 			
 			
 			//Medium breakpoint
-			if( isset($prso_src_set_options['fullsz_med_'.$_group_slug]) && ($prso_src_set_options['fullsz_med_'.$_group_slug] == 0) ) {
+			if( isset($prso_src_set_options['fullsz_med_'.$_group_slug]) && ($prso_src_set_options['fullsz_med_'.$_group_slug] !== 'full') ) {
 				
 				$_break_point = $prso_src_set_options['bp_med_'.$_group_slug];
 				
 				$config_options['img_groups'][$group_title][$_break_point] = array(
-					'w'				=>	$prso_src_set_options['imgw_med_'.$_group_slug],
-					'h'				=>	$prso_src_set_options['imgh_med_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,
-					'retina'		=>	$prso_src_set_options['x2_med_'.$_group_slug]
+					'retina'		=>	$prso_src_set_options['x2_med_'.$_group_slug],
+					'thumb_size'	=>	$prso_src_set_options['fullsz_med_'.$_group_slug]
 				);
+				
+				//Detect if this is a custom image size and add image width/height
+				if( $prso_src_set_options['fullsz_med_'.$_group_slug] === 'custom' ) {
+					
+					$config_options['img_groups'][$group_title][$_break_point]['w'] = $prso_src_set_options['imgw_med_'.$_group_slug];
+					
+					$config_options['img_groups'][$group_title][$_break_point]['h'] = $prso_src_set_options['imgh_med_'.$_group_slug];
+					
+				}
 				
 			}
 			
 			//Large breakpoint
-			if( isset($prso_src_set_options['fullsz_lg_'.$_group_slug]) && ($prso_src_set_options['fullsz_lg_'.$_group_slug] == 0) ) {
+			if( isset($prso_src_set_options['fullsz_lg_'.$_group_slug]) && ($prso_src_set_options['fullsz_lg_'.$_group_slug] !== 'full') ) {
 				
 				$_break_point = $prso_src_set_options['bp_lg_'.$_group_slug];
 				
 				$config_options['img_groups'][$group_title][$_break_point] = array(
-					'w'				=>	$prso_src_set_options['imgw_lg_'.$_group_slug],
-					'h'				=>	$prso_src_set_options['imgh_lg_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,
-					'retina'		=>	$prso_src_set_options['x2_lg_'.$_group_slug]
+					'retina'		=>	$prso_src_set_options['x2_lg_'.$_group_slug],
+					'thumb_size'	=>	$prso_src_set_options['fullsz_lg_'.$_group_slug]
 				);
+				
+				//Detect if this is a custom image size and add image width/height
+				if( $prso_src_set_options['fullsz_lg_'.$_group_slug] === 'custom' ) {
+					
+					$config_options['img_groups'][$group_title][$_break_point]['w'] = $prso_src_set_options['imgw_lg_'.$_group_slug];
+					
+					$config_options['img_groups'][$group_title][$_break_point]['h'] = $prso_src_set_options['imgh_lg_'.$_group_slug];
+					
+				}
 				
 			}
 			
 			//X Large breakpoint
-			if( isset($prso_src_set_options['fullsz_xl_'.$_group_slug]) && ($prso_src_set_options['fullsz_xl_'.$_group_slug] == 0) ) {
+			if( isset($prso_src_set_options['fullsz_xl_'.$_group_slug]) && ($prso_src_set_options['fullsz_xl_'.$_group_slug] !== 'full') ) {
 				
 				$_break_point = $prso_src_set_options['bp_xl_'.$_group_slug];
 				
@@ -107,8 +131,18 @@ function prso_src_set_init() {
 					'w'				=>	$prso_src_set_options['imgw_xl_'.$_group_slug],
 					'h'				=>	$prso_src_set_options['imgh_xl_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,
-					'retina'		=>	$prso_src_set_options['x2_xl_'.$_group_slug]
+					'retina'		=>	$prso_src_set_options['x2_xl_'.$_group_slug],
+					'thumb_size'	=>	$prso_src_set_options['fullsz_xl_'.$_group_slug]
 				);
+				
+				//Detect if this is a custom image size and add image width/height
+				if( $prso_src_set_options['fullsz_xl_'.$_group_slug] === 'custom' ) {
+					
+					$config_options['img_groups'][$group_title][$_break_point]['w'] = $prso_src_set_options['imgw_xl_'.$_group_slug];
+					
+					$config_options['img_groups'][$group_title][$_break_point]['h'] = $prso_src_set_options['imgh_xl_'.$_group_slug];
+					
+				}
 				
 			}
 			
@@ -117,5 +151,6 @@ function prso_src_set_init() {
 	
 	//Instatiate plugin class and pass config options array
 	new PrsoSrcSet( $config_options );
-		
+
+	
 }

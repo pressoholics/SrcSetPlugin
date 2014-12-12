@@ -18,8 +18,8 @@ class PrsoSrcSet {
 		
 		//Init plugin
 		add_action( 'init', array($this, 'init_plugin') );
-		add_action( 'admin_init', array($this, 'admin_init_plugin') );
-		add_action( 'current_screen', array($this, 'current_screen_init_plugin') );
+		//add_action( 'admin_init', array($this, 'admin_init_plugin') );
+		//add_action( 'current_screen', array($this, 'current_screen_init_plugin') );
 		
 	}
 	
@@ -81,6 +81,10 @@ class PrsoSrcSet {
 		
 		//Filter TINYMCE allowed attributes for img tag
 		add_filter('tiny_mce_before_init', array($this, 'add_tinymce_attributes'));
+		
+		//prso_debug(get_intermediate_image_sizes());
+		//prso_debug(self::$class_config);
+		//exit();
 		
 	}
 
@@ -183,55 +187,14 @@ class PrsoSrcSet {
     */
 	public function add_image_srcset( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
     	
-    	$srcset = array();
-    	
-    	//Check if requested size is one of our image groups
-    	if( isset(self::$class_config['img_groups'][$size]) ) {
-	    	
-	    	//Loop group sizes
-	    	foreach( self::$class_config['img_groups'][$size] as $breakpoint => $image_data ) {
-		    	
-		    	//Cache unique image name based on group title and breakpoint
-			    $image_name = "{$size}-{$breakpoint}";
-			    
-			    //Check if this is a retina image create a x1 version as well as x2
-			    if( (bool)$image_data['retina'] === TRUE ) {
-				    
-				    //x2 (use original size supplied by user)
-				    $image_name = "{$size}-{$breakpoint}-@2";
-				    
-				    //Add regular version
-					$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
-					
-					//Check image size exists
-					if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
-						$srcset[] = $_attachment_src[0] . " {$breakpoint}w 2x";
-					}
-				    
-			    }
-				    
-				//Add regular version
-				$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
-				
-				if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
-					$srcset[] = $_attachment_src[0] . " {$breakpoint}w";
-				}
-		    	
-	    	}
-	    	
-	    	//Splice srcset into html output
-	    	if( !empty($srcset) ) {
-	    		$_srcset = join(',', $srcset );
-		    	$html = str_replace( '/>', 'srcset="'.$_srcset.'"/>', $html );
-	    	}
-	    	
-    	}
+    	//Loop group sizes and get final html for image tag
+	    $html = $this->render_img_tag_html( $html, $size, $post_thumbnail_id );
 		
         return $html;
     }
 	
 	/**
-    * add_image_srcset
+    * add_media_image_tag_srcset
     *
     * @Called By Filter: 'get_image_tag'
     * @Called By Filter: 'image_send_to_editor'
@@ -256,23 +219,48 @@ class PrsoSrcSet {
 	    	$post_group_size = self::$class_config['post_img_group'];
     	}
     	
-    	//Confirm that post group size is setup in config
-    	if( isset(self::$class_config['img_groups'][$post_group_size]) ) {
+    	//Loop group sizes and get final html for image tag
+	    $html = $this->render_img_tag_html( $html, $post_group_size, $id );
+		
+        return $html;
+    }
+    
+    /**
+    * add_image_srcset
+    *
+    * @Called By : $this->add_image_srcset()
+    * @Called By : $this->add_media_image_tag_srcset()
+    * 
+    * Helper to loop image group data and return the img tag html along with srcset attr
+    * 
+    * @param	string 	$html
+    * @param	string 	$img_size_slug 		//Image size slug of source image
+    * @param	int		$post_thumbnail_id	//either image id for post thumnail id for image to process
+    * @return	string	$html
+    * @access 	private
+    * @author	Ben Moody
+    */
+    private function render_img_tag_html( $html = NULL, $img_size_slug = NULL, $post_thumbnail_id = NULL ) {
+		
+		//Init vars
+		$srcset = array();
+		
+		//Check if requested size is one of our image groups
+    	if( isset(self::$class_config['img_groups'][$img_size_slug]) ) {
 	    	
-	    	//Loop group sizes
-	    	foreach( self::$class_config['img_groups'][$post_group_size] as $breakpoint => $image_data ) {
+	    	foreach( self::$class_config['img_groups'][$img_size_slug] as $breakpoint => $image_data ) {
 		    	
 		    	//Cache unique image name based on group title and breakpoint
-			    $image_name = "{$post_group_size}-{$breakpoint}";
-			    
+			    $image_name = $image_data['thumb_size'];
+			   
 			    //Check if this is a retina image create a x1 version as well as x2
 			    if( (bool)$image_data['retina'] === TRUE ) {
 				    
 				    //x2 (use original size supplied by user)
-				    $image_name = "{$post_group_size}-{$breakpoint}-@2";
+				    $image_name = "{$image_name}-@2";
 				    
 				    //Add regular version
-					$_attachment_src = wp_get_attachment_image_src( $id, $image_name );
+					$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
 					
 					//Check image size exists
 					if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
@@ -282,8 +270,8 @@ class PrsoSrcSet {
 			    }
 				    
 				//Add regular version
-				$_attachment_src = wp_get_attachment_image_src( $id, $image_name );
-				
+				$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
+				 
 				if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
 					$srcset[] = $_attachment_src[0] . " {$breakpoint}w";
 				}
@@ -292,14 +280,16 @@ class PrsoSrcSet {
 	    	
 	    	//Splice srcset into html output
 	    	if( !empty($srcset) ) {
+	    	
 	    		$_srcset = join(',', $srcset );
 		    	$html = str_replace( '/>', 'srcset="'.$_srcset.'"/>', $html );
+		    	
 	    	}
 	    	
     	}
 		
-        return $html;
-    }
+		return $html;
+	}
     
     /**
     * register_image_sizes
@@ -333,67 +323,31 @@ class PrsoSrcSet {
 			    
 				    foreach( $breakpoint_sizes as $breakpoint => $image_data ) {
 					    
-					    //Cache unique image name based on group title and breakpoint
-					    $image_name = "{$group_title}-{$breakpoint}";
-					    
-					    //Check if this is a retina image create a x1 version as well as x2
-					    if( (bool)$image_data['retina'] === TRUE ) {
+					    //Confirm this is a custom image size and not existing image size
+					    if( isset($image_data['w'], $image_data['h']) ) {
 						    
-						    //x1
-						    add_image_size( $image_name, ($image_data['w']/2), ($image_data['h']/2), TRUE );
+						    //Cache unique image name based on group title and breakpoint
+						    $image_name = "{$group_title}-{$breakpoint}";
 						    
-						    //x2 (use original size supplied by user)
-						    $image_name = "{$group_title}-{$breakpoint}-@2";
-						    add_image_size( $image_name, $image_data['w'], $image_data['h'], TRUE );
+						    //Cache custom image size name
+						    self::$class_config['img_groups'][ $group_title ][ $breakpoint ]['thumb_size'] = $image_name;
 						    
-					    } else {
-						    
-						    //Add regular version
-						    add_image_size( $image_name, $image_data['w'], $image_data['h'], TRUE );
-						    
-					    }
-					    
-				    }
-				    
-			    }
-			    
-		    }
-		    
-	    }
-	    
-    }
-    
-    /**
-     * Would prevent srcset custom sizes being generated on image upload
-     *
-     * Needs work.
-     *
-     */	
-    public function prevent_resize_on_upload( $sizes ) {
-	    
-	    //Loop image groups and setup image sizes
-	    if( !empty(self::$class_config['img_groups']) && is_array(self::$class_config['img_groups']) ) {
-		    
-		    foreach( self::$class_config['img_groups'] as $group_title => $breakpoint_sizes ) {
-		    
-			    //Loop breakpoint image sizes in this group
-			    if( !empty($breakpoint_sizes) ) {
-			    
-				    foreach( $breakpoint_sizes as $breakpoint => $image_data ) {
-					    
-					    //Cache unique image name based on group title and breakpoint
-					    $image_name = "{$group_title}-{$breakpoint}";
-					    
-					    //Unset image size
-					    unset( $sizes[$image_name] );
-					    
-					    //Check if this is a retina image create a x1 version as well as x2
-					    if( (bool) $image_data['retina'] === TRUE ) {
-						    
-						   //Unset retina image size
-						   $image_name = "{$group_title}-{$breakpoint}-@2";
-						   
-						   unset( $sizes[$image_name] );
+						    //Check if this is a retina image create a x1 version as well as x2
+						    if( (bool)$image_data['retina'] === TRUE ) {
+							    
+							    //x1
+							    add_image_size( $image_name, ($image_data['w']/2), ($image_data['h']/2), TRUE );
+							    
+							    //x2 (use original size supplied by user)
+							    $image_name = "{$group_title}-{$breakpoint}-@2";
+							    add_image_size( $image_name, $image_data['w'], $image_data['h'], TRUE );
+							    
+						    } else {
+							    
+							    //Add regular version
+							    add_image_size( $image_name, $image_data['w'], $image_data['h'], TRUE );
+							    
+						    }
 						    
 					    }
 					    
@@ -406,57 +360,6 @@ class PrsoSrcSet {
 	    }
 	    
     }
-    
-    /**
-     * Would resize srcset image thumbnails only on first use of size
-     *
-     * Needs work.
-     *
-     */	
-    public function downsize_image_on_first_use( $out, $id, $size ) {
-	    
-	    //Only process images with a title added via api
-	    if( is_array($size) ) {
-	    	return false;
-	    }
-	    
-	    // If image size exists let WP serve it like normally
-        $imagedata = wp_get_attachment_metadata($id);
-        if (is_array($imagedata) && isset($imagedata['sizes'][$size]))
-            return false;
-
-        // Check that the requested size exists, or abort
-        global $_wp_additional_image_sizes;
-        if( is_array($size) ) {
-	        if (!isset($_wp_additional_image_sizes[$size])) {
-		        return false;
-	        }
-	        return false;
-        }
-        
-        if( !isset($_wp_additional_image_sizes[$size]) ) {
-	        return false;
-        }
-        
-        // Make the new thumb
-        if (!$resized = image_make_intermediate_size(
-            get_attached_file($id),
-            $_wp_additional_image_sizes[$size]['width'],
-            $_wp_additional_image_sizes[$size]['height'],
-            $_wp_additional_image_sizes[$size]['crop']
-        ))
-            return false;
-
-        // Save image meta, or WP can't see that the thumb exists now
-        $imagedata['sizes'][$size] = $resized;
-        wp_update_attachment_metadata($id, $imagedata);
-
-        // Return the array for displaying the resized image
-        $att_url = wp_get_attachment_url($id);
-        return array(dirname($att_url) . '/' . $resized['file'], $resized['width'], $resized['height'], true);
-	    
-    }
-
         
 	/**
 	* load_redux_options_framework

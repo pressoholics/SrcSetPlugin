@@ -56,27 +56,40 @@ class PrsoSrcSetRegen {
 		<br/>
 		<h3>Total Posts: <?php echo $query->post_count ?></h3>
 		<?php
+		$images = array();
 		while ( $query->have_posts() ) {
 			$query->the_post();
-			$has_images = preg_match_all( '(<img[\w\W]+?>)', $post->post_content, $images );
+			$has_images = preg_match_all( '/<img[\w\W]+?>/i', $post->post_content, $images );
+			echo '<pre>',print_r( $images, true ), '</pre>';
+			$content = $post->post_content;
 			?>
 		<h5>Post (ID <?php the_ID() ?>): <?php the_title() ?></h5>
-		<p><?php echo $has_images ? 'Has matches: ' . count( $images ) : 'No matches' ?></p>
+		<p><?php echo $has_images ? 'Matches: ' . count( $images[0] ) : 'No matches' ?></p>
 			<?php
-			foreach ( $images as $image ) {
-				echo '<pre>', esc_html( $image[0] ), '</pre>';
-				$is_attachment = preg_match( '/class=\"[\w\W]*?wp-image-(\d+)[\w\W]*?\"/', $image[0], $id_matches );
-				if ( $is_attachment ) {
-					echo '<p> Attachment ID is ', $id_matches[1];
+			foreach ( $images[0] as $image ) {
+				$is_attachment = preg_match( '/class=\"[\w\W]*?wp-image-(\d+)[\w\W]*?\"/i', $image, $id_matches );
 				
-					$attachment = wp_get_attachment_metadata( $id_matches[1] );
+				// We are only dealing with WP Attachments
+				if ( $is_attachment ) {
+					echo "<hr/><h4>New Attachment</h4>";
+					echo '<p> Attachment ID is ', $id_matches[1];
+					echo '<pre>', esc_html( $image ), '</pre>';
+				
+					// Strip old srcset attribute if exists
+					$stripped_image = preg_replace( '/\s*srcset=\"[\w\W]*?\"/i', '', $image );
+					
 					// todo: generate srcset
+					$new_image = PrsoSrcSet::render_img_tag_html( $stripped_image, 'Full', $id_matches[1]);
+					echo "<h4>New HTML</h4>", '<pre>', esc_html( $new_image ), '</pre>';
+					
+					$content = str_replace( $image, $new_image, $content );
 				}
 			}
+			echo '<p><strong>', ( wp_update_post( array( 'ID' => get_the_ID(), 'post_content' => $content ) ) ? 'Updated!' : "Error" ), '</strong></p>';
 		}
 		?>
 		<?php } else { ?>
-		<a class="button-primary" href="<?php echo add_query_arg('start', 1 ) ?>">Regenerate srcset in post content</a>
+		<a class="button-primary" href="<?php echo add_query_arg('start', 1 ) ?>">Regenerate srcset in <strong>ALL</strong> post content</a>
 		<?php } ?>
 	</div>
 	<?php

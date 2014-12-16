@@ -237,18 +237,18 @@ class PrsoSrcSet {
     * @param	string 	$img_size_slug 		//Image size slug of source image
     * @param	int		$post_thumbnail_id	//either image id for post thumnail id for image to process
     * @return	string	$html
-    * @access 	private
+    * @access 	public static
     * @author	Ben Moody
     */
-    private function render_img_tag_html( $html = NULL, $img_size_slug = NULL, $post_thumbnail_id = NULL ) {
+    public static function render_img_tag_html( $html = NULL, $img_size_slug = NULL, $post_thumbnail_id = NULL ) {
 		
 		//Init vars
 		$srcset = array();
 		
 		//Check if requested size is one of our image groups
-    	if( isset(self::$class_config['img_groups'][$img_size_slug]) ) {
+    	if( isset(static::$class_config['img_groups'][$img_size_slug]) ) {
 	    	
-	    	foreach( self::$class_config['img_groups'][$img_size_slug] as $breakpoint => $image_data ) {
+	    	foreach( static::$class_config['img_groups'][$img_size_slug] as $breakpoint => $image_data ) {
 		    	
 		    	//Cache unique image name based on group title and breakpoint
 			    $image_name = $image_data['thumb_size'];
@@ -282,7 +282,7 @@ class PrsoSrcSet {
 	    	if( !empty($srcset) ) {
 	    	
 	    		$_srcset = join(',', $srcset );
-		    	$html = str_replace( '/>', 'srcset="'.$_srcset.'"/>', $html );
+		    	$html = str_replace( '/>', ' srcset="'.$_srcset.'"/>', $html );
 		    	
 	    	}
 	    	

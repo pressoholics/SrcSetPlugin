@@ -36,6 +36,7 @@ function prso_src_set_init() {
 	//Init vars
 	global $prso_src_set_options;
 	$config_options = array();
+	$img_size_rels	= array();
 	
 	//Cache plugin options array
 	$prso_src_set_options = get_option( PRSOSRCSET__OPTIONS_NAME );
@@ -54,6 +55,11 @@ function prso_src_set_init() {
 			$_group_slug = hash("crc32b", $group_title);
 			
 			$_group_title = sanitize_title( $group_title );
+			
+			//Cache custom image size relationship for this group
+			if( isset($prso_src_set_options['img_size_rel_'.$_group_slug]) && !empty($prso_src_set_options['img_size_rel_'.$_group_slug]) ) {
+				$img_size_rels[ $prso_src_set_options['img_size_rel_'.$_group_slug] ] = $_group_title;
+			}
 			
 			//Small breakpoint
 			if( isset($prso_src_set_options['fullsz_sm_'.$_group_slug]) && ($prso_src_set_options['fullsz_sm_'.$_group_slug] !== 'full') ) {
@@ -147,6 +153,12 @@ function prso_src_set_init() {
 			}
 			
 		}
+		
+		//Cache custom image size relationships in config array
+		if( !empty($img_size_rels) ) {
+			$config_options['img_size_rels'] = $img_size_rels;
+		}
+		
 	}
 	
 	//Instatiate plugin class and pass config options array

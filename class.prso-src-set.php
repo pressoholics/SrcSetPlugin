@@ -77,7 +77,7 @@ class PrsoSrcSet {
 		add_filter( 'post_thumbnail_html', array( $this, 'add_image_srcset' ), 10, 5 );
 		
 		//Attachment image attribute filter -- filters img tags added via tinymce content editor
-		add_filter( 'image_send_to_editor', array( $this, 'add_media_image_tag_srcset' ), 999, 6 );
+		add_filter( 'image_send_to_editor', array( $this, 'add_media_image_tag_srcset' ), 999, 8 );
 		
 		//Filter TINYMCE allowed attributes for img tag
 		add_filter('tiny_mce_before_init', array($this, 'add_tinymce_attributes'));
@@ -208,19 +208,21 @@ class PrsoSrcSet {
     * @access 	public
     * @author	Ben Moody
     */
-    public function add_media_image_tag_srcset( $html, $id, $alt, $title, $align, $size ){
+    public function add_media_image_tag_srcset( $html, $id, $caption, $title, $align, $url, $size, $alt ){
     	
     	//Init vars
-    	$post_group_size 	= NULL; //Get this from config options self::$class_config['post_img_group']
+    	//$post_group_size 	= NULL; //Get this from config options self::$class_config['post_img_group'] --- TO REMOVE!!
     	$srcset 			= array();
     	
-    	//Get post image group from config
+    	//Get post image group from config --- TO REMOVE!!
+    	/*
     	if( isset(self::$class_config['post_img_group']) && !empty(self::$class_config['post_img_group']) ) {
 	    	$post_group_size = self::$class_config['post_img_group'];
     	}
+    	*/
     	
     	//Loop group sizes and get final html for image tag
-	    $html = $this->render_img_tag_html( $html, $post_group_size, $id );
+	    $html = $this->render_img_tag_html( $html, $size, $id );
 		
         return $html;
     }
@@ -232,6 +234,8 @@ class PrsoSrcSet {
     * @Called By : $this->add_media_image_tag_srcset()
     * 
     * Helper to loop image group data and return the img tag html along with srcset attr
+    *
+    * NOTE: First checks for a srcset group assigned to the current image size, then fallback and check if the image size is in fact a srcset group, failing that just render the html as usual.
     * 
     * @param	string 	$html
     * @param	string 	$img_size_slug 		//Image size slug of source image
@@ -243,12 +247,40 @@ class PrsoSrcSet {
     public static function render_img_tag_html( $html = NULL, $img_size_slug = NULL, $post_thumbnail_id = NULL ) {
 		
 		//Init vars
-		$srcset = array();
+		$srcset 			= array();
+		$srcset_group_slug	= NULL;
+		$srcset_group_data 	= array(); //Cache of srcset group options for requested image size
+		$img_size_rels		= array(); //Contains any relationships between srcset groups and custom img sizes
 		
-		//Check if requested size is one of our image groups
-    	if( isset(static::$class_config['img_groups'][$img_size_slug]) ) {
+		//First cache srtset group/custom image size relationships
+		if( isset( static::$class_config['img_size_rels'] ) ) {
+			$img_size_rels = static::$class_config['img_size_rels'];
+		}
+		
+		//Check if requested size is a custom image size assigned to an srcset group
+		if( isset($img_size_rels[ $img_size_slug ]) ) {
+		
+			$srcset_group_slug = $img_size_rels[ $img_size_slug ];
+			
+			//Confirm that we have a group to use for this
+			if( isset(static::$class_config['img_groups'][ $srcset_group_slug ]) ) {
+				//cache group data
+				$srcset_group_data = static::$class_config['img_groups'][ $srcset_group_slug ];
+			}
+			
+		}
+		
+		//Fallback -- check if image size is in fact a srcset group name and NOT an custom image size
+		if( empty($srcset_group_data) && isset(static::$class_config['img_groups'][$img_size_slug]) ) {
+			
+			//Cache the group data
+			$srcset_group_data = static::$class_config['img_groups'][$img_size_slug];
+			
+		}
+		
+    	if( !empty($srcset_group_data) ) {
 	    	
-	    	foreach( static::$class_config['img_groups'][$img_size_slug] as $breakpoint => $image_data ) {
+	    	foreach( $srcset_group_data as $breakpoint => $image_data ) {
 		    	
 		    	//Cache unique image name based on group title and breakpoint
 			    $image_name = $image_data['thumb_size'];

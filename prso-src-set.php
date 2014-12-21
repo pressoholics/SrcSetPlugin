@@ -54,11 +54,11 @@ function prso_src_set_init() {
 		
 			$_group_slug = hash("crc32b", $group_title);
 			
-			$_group_title = sanitize_title( $group_title );
+			$group_title = sanitize_title( $group_title );
 			
 			//Cache custom image size relationship for this group
 			if( isset($prso_src_set_options['img_size_rel_'.$_group_slug]) && !empty($prso_src_set_options['img_size_rel_'.$_group_slug]) ) {
-				$img_size_rels[ $prso_src_set_options['img_size_rel_'.$_group_slug] ] = $_group_title;
+				$img_size_rels[ $prso_src_set_options['img_size_rel_'.$_group_slug] ] = $group_title;
 			}
 			
 			//Small breakpoint
@@ -66,7 +66,7 @@ function prso_src_set_init() {
 				
 				$_break_point = $prso_src_set_options['bp_sm_'.$_group_slug];
 				
-				$config_options['img_groups'][$_group_title][$_break_point] = array(
+				$config_options['img_groups'][$group_title][$_break_point] = array(
 					'breakpoint'	=>	$_break_point,
 					'retina'		=>	$prso_src_set_options['x2_sm_'.$_group_slug],
 					'thumb_size'	=>	$prso_src_set_options['fullsz_sm_'.$_group_slug]
@@ -75,9 +75,9 @@ function prso_src_set_init() {
 				//Detect if this is a custom image size and add image width/height
 				if( $prso_src_set_options['fullsz_sm_'.$_group_slug] === 'custom' ) {
 					
-					$config_options['img_groups'][$_group_title][$_break_point]['w'] = $prso_src_set_options['imgw_sm_'.$_group_slug];
+					$config_options['img_groups'][$group_title][$_break_point]['w'] = $prso_src_set_options['imgw_sm_'.$_group_slug];
 					
-					$config_options['img_groups'][$_group_title][$_break_point]['h'] = $prso_src_set_options['imgh_sm_'.$_group_slug];
+					$config_options['img_groups'][$group_title][$_break_point]['h'] = $prso_src_set_options['imgh_sm_'.$_group_slug];
 					
 				}
 				

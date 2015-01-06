@@ -255,7 +255,6 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 
 			//Add dropdown to select which group to use for post content
 			global $prso_src_set_options;
-			$post_group_select 	= array();
 
 			if( isset($prso_src_set_options['img_groups_instances']) && !empty($prso_src_set_options['img_groups_instances']) ){
 				
@@ -294,8 +293,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						'validate' => 'no_special_chars',
 						'subtitle' => __('Add and remove image groups. Enter title for each group then click "Save Changes" to create options more options for each group.', $this->text_domain),
 						'desc' => __('Add unique title for each group. Tip: Keep it short', $this->text_domain)
-					),
-					$post_group_select
+					)
 				)
 			);
 			
@@ -326,15 +324,6 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						'icon' => 'el-icon-cogs',
 					    // 'submenu' => false, // Setting submenu to false on a given section will hide it from the WordPress sidebar menu!
 						'fields' => array(
-							
-							array(
-							    'id'    => 'info_success',
-							    'type'  => 'info',
-							    'style' => 'normal',
-							    'title' => __('Did you know?', 'redux-framework-demo'),
-							    'icon'  => 'el-icon-info-sign',
-							    'desc'  => sprintf( __( 'You can manually place srcset images into your theme or code using the Wordpress API: <br/>E.G. the_post_thumbnail( [custom_image_size_slug OR src_set_group_slug e.g "%1$s"] ).', $this->text_domain ), sanitize_title($group_title) )
-							),
 							
 							array(
 							    'id'    => 'info_normal',

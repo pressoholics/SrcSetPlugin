@@ -255,7 +255,6 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 
 			//Add dropdown to select which group to use for post content
 			global $prso_src_set_options;
-			$post_group_select 	= array();
 
 			if( isset($prso_src_set_options['img_groups_instances']) && !empty($prso_src_set_options['img_groups_instances']) ){
 				
@@ -266,6 +265,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 					$group_select[$_img_group] = $_img_group;
 				}
 				
+				/*  --- TO REMOVE!!
 				$post_group_select = array(
 					'id'       => 'post_img_group',
 				    'type'     => 'select',
@@ -275,6 +275,8 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 				    // Must provide key => value pairs for select options
 				    'options'  => $group_select,
 				);
+				 --- TO REMOVE!! */
+				
 			}
 
 			// ACTUAL DECLARATION OF SECTIONS
@@ -291,8 +293,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						'validate' => 'no_special_chars',
 						'subtitle' => __('Add and remove image groups. Enter title for each group then click "Save Changes" to create options more options for each group.', $this->text_domain),
 						'desc' => __('Add unique title for each group. Tip: Keep it short', $this->text_domain)
-					),
-					$post_group_select
+					)
 				)
 			);
 			
@@ -304,27 +305,45 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 					
 					$_group_slug = hash("crc32b", $group_title);
 					
-					//Create array of image sizes to use in a select menu
+					//Create array of image sizes to use in 'Intermidiate Image Size' select menu
 					$reg_img_sizes 	= get_intermediate_image_sizes();
 					$img_sizes 		= array( 'full' => 'Full Size', 'custom' => 'Custom' );
 					foreach( $reg_img_sizes as $size_slug ) {
 						$img_sizes[$size_slug] = $size_slug;
 					}
 					
+					//Create array of image sizes to use in 'Custom Image Size Relationship' select menu
+					$rel_img_sizes 	= array();
+					foreach( $reg_img_sizes as $size_slug ) {
+						$rel_img_sizes[$size_slug] = $size_slug;
+					}
+					
 					$this->sections[] = array(
-						'title' => __(ucfirst($group_title).' Group', $this->text_domain),
-						'desc' => __('Setup image sizes for all breakpoints in this group', $this->text_domain),
+						'title' => __(ucfirst($group_title).' SrcSet Group', $this->text_domain),
+						'desc' => __('Setup image sizes for all breakpoints in this SrcSet group', $this->text_domain),
 						'icon' => 'el-icon-cogs',
 					    // 'submenu' => false, // Setting submenu to false on a given section will hide it from the WordPress sidebar menu!
 						'fields' => array(
 							
 							array(
-							    'id'    => 'info_success',
+							    'id'    => 'info_normal',
 							    'type'  => 'info',
 							    'style' => 'success',
-							    'title' => __('Did you know?', 'redux-framework-demo'),
+							    'title' => __('NOTE', 'redux-framework-demo'),
 							    'icon'  => 'el-icon-info-sign',
-							    'desc'  => sprintf( __( 'You can manually place srcset images into your theme or code using the Wordpress API: <br/>E.G. the_post_thumbnail( "%1$s" ) OR get_the_post_thumbnail( $post_id, "%1$s" )', $this->text_domain ), sanitize_title($group_title) )
+							    'desc'  => sprintf( __( 'When using a registered custom image size you MUST assign this SrcSet group to that image size <br/>with the relationship option below.', $this->text_domain ), sanitize_title($group_title) )
+							),
+							
+							array(
+							    'id'       => 'img_size_rel_'.$_group_slug,
+							    'class'	   => 'prso-src-set-img-rel',
+							    'type'     => 'select',
+							    'title'    => __('Custom Image Size Relationship', $this->text_domain),
+							    'subtitle' => __('Link this image group with an existing custom image size', $this->text_domain),
+							    'desc'     => __('Selected image size will be associated with this image group. All images using this custom size will have this srcset group applied to them. <br/><span style="color:red;font-weight:bold;">(An Image size can only be assigned to a single SrcSet group at a time)</span>', $this->text_domain),
+							    // Must provide key => value pairs for select options
+							    'options'  => $rel_img_sizes,
+							    'default'  => 'full',
 							),
 							
 							array(

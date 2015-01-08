@@ -1,0 +1,73 @@
+;
+var PrsoSrcSetData = PrsoSrcSetData || {};
+
+(function($, localized){
+	
+	// Elements - stored for reuse
+	var $regenButton = $('.os-srcset-regen'),
+		$progress = $('#os-srcset-regen-status .progress');
+		$message = $('#os-srcset-regen-status .message');
+	
+	var currentPage = 0, // current page index
+		completedPosts = 0, // Completed count
+		totalPosts = 0; // total count
+	
+	
+	// Document ready
+	$(function(){
+		$regenButton.on('click', initRegeneration);
+	});
+	
+	/**
+	 * Initialize the regeneration process
+	 * 
+	 * @returns {undefined}
+	 */
+	function initRegeneration(){
+		$regenButton.hide();
+		$message.html(localized.messages.start);
+		
+		regenBatch();
+	}
+	
+	function updateProgress() {
+		var message = localized.messages.progress;
+		message = message.replace(/\%d/, completedPosts).replace(/\%d/, totalPosts);
+		$progress.html(message);
+		$message.html('');
+	}
+	
+	function regenBatch(){
+		$.ajax({
+			url: localized.ajaxUrl,
+			dataType: 'json',
+			data: {
+				action: localized.ajaxAction,
+				current_page: currentPage
+			},
+			success: function(response){
+				totalPosts = response.data.totalPosts;
+				completedPosts += response.data.postsPerPage;
+				currentPage++;
+				
+				updateProgress();
+					
+				if ( completedPosts < totalPosts )  {
+					regenBatch();
+				} else {
+					// Set completed message
+					$message.addClass('success').append(localized.messages.complete);
+				}
+			},
+			error: function(jqXHR, textStatus){
+				// Set error message
+				$progress.addClass('error').html(localized.messages.error);
+			}
+		});
+	}
+	
+	/**
+	 * 
+	 */
+	
+})(jQuery, PrsoSrcSetData);

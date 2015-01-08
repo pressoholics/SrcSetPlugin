@@ -633,7 +633,23 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 				
 			}
 			
-
+			// Regeneration
+			if ( class_exists( 'PrsoSrcSetRegen' ) ) {
+				$this->sections[] = array(
+					'title' => __('Regeneration', $this->text_domain),
+					'desc' => __('Regenerate srcset attributes of all images within post content. <strong>THIS IS NOT REVERSABLE</strong>.', $this->text_domain),
+					'icon' => 'el-icon-refresh',
+					// 'submenu' => false, // Setting submenu to false on a given section will hide it from the WordPress sidebar menu!
+					'fields' => array(
+						array(
+							'id'=>'img_groups_instances',
+							'type' => 'callback',
+							'title' => __('Manage Image Size Groups', $this->text_domain),
+							'callback' => array( 'PrsoSrcSetRegen', 'render_regeneration_section' )
+						)
+					)
+				);
+			}
 
 			if(file_exists(trailingslashit(dirname(__FILE__)) . 'README.html')) {
 			    $tabs['docs'] = array(

@@ -130,7 +130,7 @@ class PrsoSrcSetRegen {
 		
 		$query_args = array(
 			'post_type' => 'any',
-			'posts_per_page' => 1,
+			'posts_per_page' => 50,
 			'page' => $current_page
 		);
 		

@@ -10,99 +10,34 @@ class PrsoSrcSetRegen {
 	
 	const REGEN_AJAX_ACTION = 'prso-srcset-regenerate';
 	
+	/**
+	 * This is the callback for a Redux framework section. Here we will regenerate
+	 * srcset within post content.
+	 * 
+	 * @param array $field
+	 * @param array $value
+	 */
 	public static function render_regeneration_section( $field, $value ) {
-		
-	?>
-	<h3>Warning:</h3>
-	<p><strong>This feature directly modifies your post content HTML. It is highly recommended that you do a database backup before running this feature.</strong></p>
-		
-	<p><a class="button button-primary os-srcset-regen" rel="regenerate-srcset" href="javascript:void(0);"><?php _ex( 'Regenerate srcset', 'text', PRSOSRCSET__DOMAIN ); ?></a></p>
-	<span class="spinner pull-content" style="float:left;"></span>
-	<div id="os-srcset-regen-status">
-		<p class="progress"></p>
-		<p class="message"></p>
-	</div>
-	<?php
+		?>
+		<h3><?php _e( "Warning:", PRSOSRCSET__DOMAIN ) ?></h3>
+		<p><strong><?php _e( "This feature directly modifies your post content HTML. It is highly recommended that you do a database backup before running this feature.", PRSOSRCSET__DOMAIN ) ?></strong></p>
 
+		<p><a class="button button-primary os-srcset-regen" rel="regenerate-srcset" href="javascript:void(0);"><?php _ex( 'Regenerate srcset', 'text', PRSOSRCSET__DOMAIN ); ?></a></p>
+		<span class="spinner pull-content" style="float:left;"></span>
+		<div id="os-srcset-regen-status">
+			<p class="progress"></p>
+			<p class="message"></p>
+		</div>
+		<?php
 	}
 	
 	
 	function __construct() {
-		// Create submenu page for srcset regeneration
-		// add_action( 'admin_menu', array( $this, 'add_submenu_page' ), 20 );
-		
 		// Scripts for the Regeneration
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		
 		// AJAX Listener
 		add_action( 'wp_ajax_' . self::REGEN_AJAX_ACTION, array( $this, 'ajax_regenerate_batch' ) );
-	}
-
-	function add_submenu_page() {
-		add_submenu_page(
-			'prso_src_set_options_options',
-			__('SrcSet Regeneration'),
-			__('SrcSet Regeneration'),
-			'manage_options',
-			'prso_src_set_regenerate',
-			array( $this, 'regen_srcset_page' ) );
-	}
-	
-	function regen_srcset_page() { 
-		global $post;
-		?>
-	<div id="wrap">
-		<h2>SrcSet Regeneration</h2>
-		<p><strong>Warning:</strong> This feature is experimental. It is required that you understand the consequences of directly manipulating page content.</p>
-		<p><strong>It is highly recommended that you do a database backup before running this feature.</strong></p>
-		<?php if ( filter_input( INPUT_GET, 'start' ) ) {
-		$query_args = array(
-			'post_type' => 'any',
-			'posts_per_page' => 1000
-		);
-		$query = new WP_Query( $query_args );
-		// echo '<pre>', print_r( $query, true ), '</pre>';
-		?>
-		<br/>
-		<h3>Total Posts: <?php echo $query->post_count ?></h3>
-		<?php
-		$images = array();
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$has_images = preg_match_all( '/<img[\w\W]+?>/i', $post->post_content, $images );
-			echo '<pre>',print_r( $images, true ), '</pre>';
-			$content = $post->post_content;
-			?>
-		<h5>Post (ID <?php the_ID() ?>): <?php the_title() ?></h5>
-		<p><?php echo $has_images ? 'Matches: ' . count( $images[0] ) : 'No matches' ?></p>
-			<?php
-			foreach ( $images[0] as $image ) {
-				$is_attachment = preg_match( '/class=\"[\w\W]*?wp-image-(\d+)[\w\W]*?\"/i', $image, $id_matches );
-				
-				// We are only dealing with WP Attachments
-				if ( $is_attachment ) {
-					echo "<hr/><h4>New Attachment</h4>";
-					echo '<p> Attachment ID is ', $id_matches[1];
-					echo '<pre>', esc_html( $image ), '</pre>';
-				
-					// Strip old srcset attribute if exists
-					$stripped_image = preg_replace( '/\s*srcset=\"[\w\W]*?\"/i', '', $image );
-					
-					// todo: generate srcset
-					$new_image = PrsoSrcSet::render_img_tag_html( $stripped_image, 'Full', $id_matches[1]);
-					echo "<h4>New HTML</h4>", '<pre>', esc_html( $new_image ), '</pre>';
-					
-					$content = str_replace( $image, $new_image, $content );
-				}
-			}
-			echo '<p><strong>', ( wp_update_post( array( 'ID' => get_the_ID(), 'post_content' => $content ) ) ? 'Updated!' : "Error" ), '</strong></p>';
-		}
-		?>
-		<?php } else { ?>
-		<a class="button-primary" href="<?php echo add_query_arg('start', 1 ) ?>">Regenerate srcset in <strong>ALL</strong> post content</a>
-		<?php } ?>
-	</div>
-	<?php
 	}
 	
 	function enqueue_admin_scripts(){

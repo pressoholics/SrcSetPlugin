@@ -29,7 +29,7 @@ class PrsoSrcSetRegen {
 	
 	function __construct() {
 		// Create submenu page for srcset regeneration
-		add_action( 'admin_menu', array( $this, 'add_submenu_page' ), 20 );
+		// add_action( 'admin_menu', array( $this, 'add_submenu_page' ), 20 );
 		
 		// Scripts for the Regeneration
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
@@ -128,15 +128,29 @@ class PrsoSrcSetRegen {
 		
 		$current_page = filter_input( INPUT_POST, 'current_page', FILTER_SANITIZE_NUMBER_INT );
 		
+		$output = array();
+		$images = array();
+		
+		$post_types = get_post_types( array( 'public' => true ) );
+		
+		// Remove Attachments
+		unset($post_types['attachment']);
+		
+		$post_types = apply_filters( 'prso_srcset_regen_post_types', $post_types, $current_page );
+		
+		$output['postTypes'] = $post_types;
+		
 		$query_args = array(
-			'post_type' => 'any',
+			'post_type' => $post_types,
 			'posts_per_page' => 50,
 			'page' => $current_page
 		);
 		
 		$query = new WP_Query( $query_args );
 		
-		$images = array();
+		$output['totalPosts'] = $query->found_posts;
+		$output['postsPerPage'] = $query->get( 'posts_per_page' );
+		
 		
 		while ( $query->have_posts() ) {
 			$query->the_post();
@@ -173,10 +187,7 @@ class PrsoSrcSetRegen {
 			}
 		}
 		wp_reset_query();
-		wp_send_json_success( array( 
-			'totalPosts' => $query->found_posts,
-			'postsPerPage' => $query->get( 'posts_per_page' )
-		) );
+		wp_send_json_success( $output );
 	}
 }
 new PrsoSrcSetRegen;

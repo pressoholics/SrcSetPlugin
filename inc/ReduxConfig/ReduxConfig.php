@@ -313,9 +313,9 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 					}
 					
 					//Create array of image sizes to use in 'Custom Image Size Relationship' select menu
-					$rel_img_sizes 	= array();
+					$rel_img_sizes 	= array( 'full' => 'Full Size' );
 					foreach( $reg_img_sizes as $size_slug ) {
-						$rel_img_sizes[$size_slug] = $size_slug;
+						$rel_img_sizes[$size_slug] = ucfirst( $size_slug );
 					}
 					
 					$this->sections[] = array(

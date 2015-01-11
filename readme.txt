@@ -65,14 +65,14 @@ alt=\"test_img\" width=\"200\" height=\"150\"
 Note that the 'srcset' attribute had been added to the img tag and will instruct the browser to replace the image with different sizes at these breakpoints, 640w, 1024w, 1440w, and 1506w.
 
 
-= I've set up an image group for an image size, but my images are not receiving the srcset attribute. What's wrong? =
+= I've set up an SrcSet group for an image size, but my images are not receiving the srcset attribute. What's wrong? =
 
 If the images were already uploaded to the Media Library, you may have to regenerate thumbnails. We recommend using [Regenerate Thumbnails](https://wordpress.org/plugins/regenerate-thumbnails/ "Regenerate Thumbnails") for this.
 
 
 = What are Image Groups? =
 
-Image Groups give you a way to relate breakpoints to any specific image size (for example, medium). You can set specific breakpoints that align to your theme, and load in smaller versions of the same image. You can select existing image sizes (thunbmail, medium, large), custom image sizes created by themes or plugins, or add a custom image size with dimensions you create.
+SrcSet Groups give you a way to relate breakpoints to any specific image size (for example, medium). You can set specific breakpoints that align to your theme, and load in smaller versions of the same image. You can select existing image sizes (thunbmail, medium, large), custom image sizes created by themes or plugins, or add a custom image size with dimensions you create.
 
 *Note:* If you use the Custom image size, remember to regenerate your thumbnails, otherwise these images will not exist, and therefore not be used within the srcset attribute.
 
@@ -82,9 +82,9 @@ Image Groups give you a way to relate breakpoints to any specific image size (fo
 Absolutely! In the srcset Settings area, there is a Regeneration page. This feature will go through all public posts (pages and posts by default), and regenerate the image tags of WordPress attachments in post content.
 
 
-= I just installed a new theme, and the breakpoints I created for my image groups no longer align with my theme. What can I do? =
+= I just installed a new theme, and the breakpoints I created for my SrcSet groups no longer align with my theme. What can I do? =
 
-First, take some time and adjust your image groups and their breakpoints. Once everything is set up properly to your liking, use [Regenerate Thumbnails](https://wordpress.org/plugins/regenerate-thumbnails/ "Regenerate Thumbnails") to create any new image sizes you've created. Then use the Srcset Regeneration tool.
+First, take some time and adjust your SrcSet groups and their breakpoints. Once everything is set up properly to your liking, use [Regenerate Thumbnails](https://wordpress.org/plugins/regenerate-thumbnails/ "Regenerate Thumbnails") to create any new image sizes you've created. Then use the Srcset Regeneration tool.
 
 
 = What about Retina support for srcset? =

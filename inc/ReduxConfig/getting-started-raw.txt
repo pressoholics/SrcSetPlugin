@@ -1,0 +1,37 @@
+<h4>What are SrcSet groups?</h4>
+
+<p>SrcSet groups allow you to change the dimensions of images based on the current width of the user's browser. When you assign a SrcSet group to an image size within Wordpress (e.g. medium or large). Any image within a post or page using that image size will have the SrcSet group's attribute applied to it.</p>
+
+<h5>For example, this "medium" image...</h5>
+
+<pre>img class="alignnone size-medium wp-image-1264" src="http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg" alt="test_img" width="200" height="150" </pre>
+
+<h5>Would change to something like this…</h5>
+
+<pre>img class="alignnone size-medium wp-image-1264" 
+src="http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg" 
+srcset="http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-125x125.jpeg 640w,
+http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg 1024w,
+http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img.jpeg 1440w,
+http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-1440x1200.jpeg 1506w" 
+alt="test_img" width="200" height="150" </pre>
+
+<p>Note that the "srcset" attribute had been added to the img tag and will instruct the browser to replace the image with different sizes at these breakpoints, 640w, 1024w, 1440w, and 1506w.</p>
+
+
+<h4>Example: How do I add srcset to all images using the "large" size?</h4>
+
+<ol>
+<li>First, create a new SrcSet group under the "General" options tab and click "save changes"</li>
+<li>Click the group options tab on the left for your new SrcSet group.</li>
+<li>You want to create the srcset for all "large" images, so link this group to the "large" image size be selecting it from the "Image Size Relationship" drop down menu.</li>
+<li>We need to tell the browser which image size to use when the browser size changes, start by selecting the "small" breakpoint from the "Select Breakpoint" drop down menu.</li>
+<li>The default browser width for this breakpoint is 640px wide. We can leave this or use the "Breakpoint Width" slider to customize this.</li>
+<li>Now we need to tell the browser which image size we want it to display at this breakpoint. Using the "Breakpoint Image Size" drop down menu we can either select an image size already registered with Wordpress OR we can create a new custom image size.</li>
+<li><strong>!!Important!!</strong> If you create a custom image size for any of your breakpoints you will have to regenerate your image thumbnails using a plugin such as "Regen. Thumbnails"</li>
+<li>Complete steps 5 & 6 for each breakpoint (small, medium, large, large)</li>
+<li>Save your SrcSet group options.</li>
+<li>All existing posts/pages which have "large" images embedded in them will need to be converted to use your new SrcSet group.</li>
+<li><strong>!!Warning!!</strong> Backup your database BEFORE this step as the process is irreversible!! Click the "Regeneration" tab in the plugin options on the left. Click the "Regenerate srcset" button and wait for the process to complete. Now all your existing posts using "large" images are now using your SrcSet group!</li>
+<li>Now whenever a user adds an image using the "large" size into a post/page content, the img html tag will also have your SrcSet group attribute added to it automatically!</li>
+</ol>

@@ -297,6 +297,22 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 				)
 			);
 			
+			//Plugin Help Section
+			$this->sections[] = array(
+				'title' => __('Help', $this->text_domain),
+				'desc' => __('Need assistance setting up SrcSet?', $this->text_domain),
+				'icon' => 'el-icon-info-sign',
+			    // 'submenu' => false, // Setting submenu to false on a given section will hide it from the WordPress sidebar menu!
+				'fields' => array(
+					array(
+					    'id'       => 'help-raw',
+					    'type'     => 'raw',
+					    'title'    => __('Getting Started', 'redux-framework-demo'),
+					    'content'  => file_get_contents(dirname(__FILE__) . '/getting-started-raw.txt')
+					)
+				)
+			);
+			
 			//Check for number of instances requested and build options for each
 			if( isset($prso_src_set_options['img_groups_instances']) ){
 				

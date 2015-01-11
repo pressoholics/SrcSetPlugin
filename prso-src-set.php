@@ -62,7 +62,7 @@ function prso_src_set_init() {
 			}
 			
 			//Small breakpoint
-			if( isset($prso_src_set_options['fullsz_sm_'.$_group_slug]) && ($prso_src_set_options['fullsz_sm_'.$_group_slug] !== 'full') ) {
+			if( isset($prso_src_set_options['fullsz_sm_'.$_group_slug]) ) {
 				
 				$_break_point = $prso_src_set_options['bp_sm_'.$_group_slug];
 				
@@ -85,7 +85,7 @@ function prso_src_set_init() {
 			
 			
 			//Medium breakpoint
-			if( isset($prso_src_set_options['fullsz_med_'.$_group_slug]) && ($prso_src_set_options['fullsz_med_'.$_group_slug] !== 'full') ) {
+			if( isset($prso_src_set_options['fullsz_med_'.$_group_slug]) ) {
 				
 				$_break_point = $prso_src_set_options['bp_med_'.$_group_slug];
 				
@@ -107,7 +107,7 @@ function prso_src_set_init() {
 			}
 			
 			//Large breakpoint
-			if( isset($prso_src_set_options['fullsz_lg_'.$_group_slug]) && ($prso_src_set_options['fullsz_lg_'.$_group_slug] !== 'full') ) {
+			if( isset($prso_src_set_options['fullsz_lg_'.$_group_slug]) ) {
 				
 				$_break_point = $prso_src_set_options['bp_lg_'.$_group_slug];
 				
@@ -129,7 +129,7 @@ function prso_src_set_init() {
 			}
 			
 			//X Large breakpoint
-			if( isset($prso_src_set_options['fullsz_xl_'.$_group_slug]) && ($prso_src_set_options['fullsz_xl_'.$_group_slug] !== 'full') ) {
+			if( isset($prso_src_set_options['fullsz_xl_'.$_group_slug]) ) {
 				
 				$_break_point = $prso_src_set_options['bp_xl_'.$_group_slug];
 				

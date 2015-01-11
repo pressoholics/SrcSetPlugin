@@ -380,16 +380,16 @@ class PrsoSrcSet {
 						    //Check if this is a retina image create a x1 version as well as x2
 						    if( ((bool)$image_data['retina'] === TRUE) && ($image_data['thumb_size'] !== 'full') ) {
 							    
-							    //x1
-							    //add_image_size( $image_name, ($image_data['w']/2), ($image_data['h']/2), TRUE );
-							    
 							    //x2 (use original size supplied by user)
-							    $image_name = "{$group_title}-{$breakpoint}-@2";
+							    $image_name_x2 = "{$group_title}-{$breakpoint}-@2";
 							    
-							    add_image_size( $image_name, $image_data['w'] * 2, $image_data['h'] * 2, TRUE );
+							    add_image_size( $image_name_x2, $image_data['w'] * 2, $image_data['h'] * 2, TRUE );
 							    
-						    } else {
-							    
+						    }
+						    
+						    //If custom image size then register a custom image size for it
+						    if( $image_data['thumb_size'] === 'custom' ) {
+
 							    //Add regular version
 							    add_image_size( $image_name, $image_data['w'], $image_data['h'], TRUE );
 							    

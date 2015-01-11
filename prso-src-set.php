@@ -40,7 +40,7 @@ function prso_src_set_set_plugin_meta($links, $file) {
 		return array_merge(
 			$links,
 			array( 
-				sprintf( 'By <a href="https://www.linkedin.com/profile/view?id=74003225">%s</a>', __('Eric Holmes') ),
+				sprintf( 'By <a href="http://ericholmes.ca">%s</a>', __('Eric Holmes') ),
 				sprintf( '<a href="tools.php?page=prso_src_set_options_options">%s</a>', __('Settings') ) 
 			)
 		);

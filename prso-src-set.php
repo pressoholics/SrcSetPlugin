@@ -2,12 +2,12 @@
 /*
  * Plugin Name: SrcSet Plugin
  * Plugin URI: 
- * Description: 
- * Author: Benjamin Moody, Eric Holmes
+ * Description: SrcSet Plugin allows you to change the dimensions of images based on browser size by automatically adding the srcset attribute.
+ * Author: Benjamin Moody
  * Version: 1.0
  * Author URI: http://www.benjaminmoody.com
  * License: GPL2+
- * Text Domain: prso_plugin_framework
+ * Text Domain: prso_src_set_plugin
  * Domain Path: /languages/
  */
 
@@ -29,6 +29,27 @@ require_once( PRSOSRCSET__PLUGIN_DIR . 'inc/class.prso-src-set-regen.php' );
 //Set Activation/Deactivation hooks
 register_activation_hook( __FILE__, array( 'PrsoSrcSet', 'plugin_activation' ) );
 register_deactivation_hook( __FILE__, array( 'PrsoSrcSet', 'plugin_deactivation' ) );
+
+//Add extra options to plugin links in plugins page
+function prso_src_set_set_plugin_meta($links, $file) {
+	
+	$plugin = plugin_basename(__FILE__);
+
+	// create link
+	if ($file == $plugin) {
+		return array_merge(
+			$links,
+			array( 
+				sprintf( 'By <a href="https://www.linkedin.com/profile/view?id=74003225">%s</a>', __('Eric Holmes') ),
+				sprintf( '<a href="tools.php?page=prso_src_set_options_options">%s</a>', __('Settings') ) 
+			)
+		);
+	}
+
+	return $links;
+}
+
+add_filter( 'plugin_row_meta', 'prso_src_set_set_plugin_meta', 10, 2 );
 
 prso_src_set_init();
 function prso_src_set_init() {

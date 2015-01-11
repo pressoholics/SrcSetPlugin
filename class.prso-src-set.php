@@ -281,30 +281,30 @@ class PrsoSrcSet {
     	if( !empty($srcset_group_data) ) {
 	    	
 	    	foreach( $srcset_group_data as $breakpoint => $image_data ) {
-		    	
-		    	//Cache unique image name based on group title and breakpoint
-			    $image_name = $image_data['thumb_size'];
-			   
+	
 			    //Check if this is a retina image create a x1 version as well as x2
-			    if( (bool)$image_data['retina'] === TRUE ) {
+			    if( ((bool)$image_data['retina'] === TRUE) && ($image_data['thumb_size'] !== 'full') ) {
 				    
 				    //x2 (use original size supplied by user)
-				    $image_name = "{$image_name}-@2";
+				    $image_name = "{$srcset_group_slug}-{$breakpoint}-@2";
 				    
 				    //Add regular version
 					$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
 					
 					//Check image size exists
-					if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
+					if( isset($_attachment_src[3]) ) {
 						$srcset[] = $_attachment_src[0] . " {$breakpoint}w 2x";
 					}
 				    
 			    }
-				    
+				
+				//Cache unique image name based on group title and breakpoint
+			    $image_name = $image_data['thumb_size'];
+				
 				//Add regular version
 				$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
-				 
-				if( isset($_attachment_src[3]) && ($_attachment_src[3] !== FALSE) ) {
+				
+				if( isset($_attachment_src[3]) ) {
 					$srcset[] = $_attachment_src[0] . " {$breakpoint}w";
 				}
 		    	
@@ -345,11 +345,8 @@ class PrsoSrcSet {
 	    $image_w	= NULL;
 	    $image_h	= NULL;
 		
-		// Create retina sizes for existing image sizes
+		//Get existing image sizes
 		$existing_image_sizes = $this->get_image_sizes();
-		foreach ($existing_image_sizes as $image_size => $image_size_data ) {
-			add_image_size($image_size . '-@2', $image_size_data['width'] * 2, $image_size_data['height'] * 2, $image_size_data['crop'] );
-		}
 	    
 	    //Loop image groups and setup image sizes
 	    if( !empty(self::$class_config['img_groups']) && is_array(self::$class_config['img_groups']) ) {
@@ -360,7 +357,15 @@ class PrsoSrcSet {
 			    if( !empty($breakpoint_sizes) ) {
 			    
 				    foreach( $breakpoint_sizes as $breakpoint => $image_data ) {
-					    
+					   	
+					   	//If this is NOT a custom size cache the image dimensions
+					   	if( ($image_data['thumb_size'] !== 'custom') && isset($existing_image_sizes[ $image_data['thumb_size'] ]) ) {
+						   	
+						   	$image_data['w'] = $existing_image_sizes[ $image_data['thumb_size'] ]['width'];
+						   	$image_data['h'] = $existing_image_sizes[ $image_data['thumb_size'] ]['height'];
+						   	
+					   	}
+					   	
 					    //Confirm this is a custom image size and not existing image size
 					    if( isset($image_data['w'], $image_data['h']) ) {
 						    
@@ -368,17 +373,20 @@ class PrsoSrcSet {
 						    $image_name = "{$group_title}-{$breakpoint}";
 						    
 						    //Cache custom image size name
-						    self::$class_config['img_groups'][ $group_title ][ $breakpoint ]['thumb_size'] = $image_name;
+						    if( $image_data['thumb_size'] === 'custom' ) {
+							    self::$class_config['img_groups'][ $group_title ][ $breakpoint ]['thumb_size'] = $image_name;
+						    }
 						    
 						    //Check if this is a retina image create a x1 version as well as x2
-						    if( (bool)$image_data['retina'] === TRUE ) {
+						    if( ((bool)$image_data['retina'] === TRUE) && ($image_data['thumb_size'] !== 'full') ) {
 							    
 							    //x1
-							    add_image_size( $image_name, ($image_data['w']/2), ($image_data['h']/2), TRUE );
+							    //add_image_size( $image_name, ($image_data['w']/2), ($image_data['h']/2), TRUE );
 							    
 							    //x2 (use original size supplied by user)
 							    $image_name = "{$group_title}-{$breakpoint}-@2";
-							    add_image_size( $image_name, $image_data['w'], $image_data['h'], TRUE );
+							    
+							    add_image_size( $image_name, $image_data['w'] * 2, $image_data['h'] * 2, TRUE );
 							    
 						    } else {
 							    
@@ -396,6 +404,8 @@ class PrsoSrcSet {
 		    }
 		    
 	    }
+	    
+	    $existing_image_sizes = $this->get_image_sizes();
 	    
     }
 	

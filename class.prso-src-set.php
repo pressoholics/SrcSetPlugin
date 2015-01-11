@@ -281,7 +281,13 @@ class PrsoSrcSet {
     	if( !empty($srcset_group_data) ) {
 	    	
 	    	foreach( $srcset_group_data as $breakpoint => $image_data ) {
-	
+				
+				/**
+				* RETINA
+				* 
+				* Use if srcset starts to support combination of breakpoints & pixel ratio
+				* 
+				*
 			    //Check if this is a retina image create a x1 version as well as x2
 			    if( ((bool)$image_data['retina'] === TRUE) && ($image_data['thumb_size'] !== 'full') ) {
 				    
@@ -297,6 +303,7 @@ class PrsoSrcSet {
 					}
 				    
 			    }
+			    **/
 				
 				//Cache unique image name based on group title and breakpoint
 			    $image_name = $image_data['thumb_size'];
@@ -377,6 +384,12 @@ class PrsoSrcSet {
 							    self::$class_config['img_groups'][ $group_title ][ $breakpoint ]['thumb_size'] = $image_name;
 						    }
 						    
+						    /**
+							* RETINA
+							* 
+							* Use if srcset starts to support combination of breakpoints & pixel ratio
+							* 
+							*
 						    //Check if this is a retina image create a x1 version as well as x2
 						    if( ((bool)$image_data['retina'] === TRUE) && ($image_data['thumb_size'] !== 'full') ) {
 							    
@@ -386,6 +399,7 @@ class PrsoSrcSet {
 							    add_image_size( $image_name_x2, $image_data['w'] * 2, $image_data['h'] * 2, TRUE );
 							    
 						    }
+						    **/
 						    
 						    //If custom image size then register a custom image size for it
 						    if( $image_data['thumb_size'] === 'custom' ) {
@@ -409,7 +423,17 @@ class PrsoSrcSet {
 	    
     }
 	
-	function get_image_sizes( $size = '' ) {
+	/**
+	* get_image_sizes
+	* 
+	* Helper to get array of all registered images sizes, including crop, width, height
+	* 
+	* @param	string	$size //Use to get data on a specific size
+	* @return	array	$sizes
+	* @access 	public
+	* @author	Ben Moody
+	*/
+	public function get_image_sizes( $size = '' ) {
 		global $_wp_additional_image_sizes;
 
         $sizes = array();

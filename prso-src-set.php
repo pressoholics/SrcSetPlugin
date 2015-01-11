@@ -68,7 +68,8 @@ function prso_src_set_init() {
 				
 				$config_options['img_groups'][$group_title][$_break_point] = array(
 					'breakpoint'	=>	$_break_point,
-					'retina'		=>	$prso_src_set_options['x2_sm_'.$_group_slug],
+					//'retina'		=>	$prso_src_set_options['x2_sm_'.$_group_slug],
+					'retina'		=>	NULL,
 					'thumb_size'	=>	$prso_src_set_options['fullsz_sm_'.$_group_slug]
 				);
 				
@@ -91,7 +92,8 @@ function prso_src_set_init() {
 				
 				$config_options['img_groups'][$group_title][$_break_point] = array(
 					'breakpoint'	=>	$_break_point,
-					'retina'		=>	$prso_src_set_options['x2_med_'.$_group_slug],
+					//'retina'		=>	$prso_src_set_options['x2_med_'.$_group_slug],
+					'retina'		=>	NULL,
 					'thumb_size'	=>	$prso_src_set_options['fullsz_med_'.$_group_slug]
 				);
 				
@@ -113,7 +115,8 @@ function prso_src_set_init() {
 				
 				$config_options['img_groups'][$group_title][$_break_point] = array(
 					'breakpoint'	=>	$_break_point,
-					'retina'		=>	$prso_src_set_options['x2_lg_'.$_group_slug],
+					//'retina'		=>	$prso_src_set_options['x2_lg_'.$_group_slug],
+					'retina'		=>	NULL,
 					'thumb_size'	=>	$prso_src_set_options['fullsz_lg_'.$_group_slug]
 				);
 				
@@ -134,10 +137,9 @@ function prso_src_set_init() {
 				$_break_point = $prso_src_set_options['bp_xl_'.$_group_slug];
 				
 				$config_options['img_groups'][$group_title][$_break_point] = array(
-					'w'				=>	$prso_src_set_options['imgw_xl_'.$_group_slug],
-					'h'				=>	$prso_src_set_options['imgh_xl_'.$_group_slug],
 					'breakpoint'	=>	$_break_point,
-					'retina'		=>	$prso_src_set_options['x2_xl_'.$_group_slug],
+					//'retina'		=>	$prso_src_set_options['x2_xl_'.$_group_slug],
+					'retina'		=>	NULL,
 					'thumb_size'	=>	$prso_src_set_options['fullsz_xl_'.$_group_slug]
 				);
 				

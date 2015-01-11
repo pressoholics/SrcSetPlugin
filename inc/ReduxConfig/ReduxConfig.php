@@ -376,6 +376,8 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 									"max" 		=> "2000",
 								),
 								
+								
+								/** RETINA OPTION
 								array(
 									'id'=>'x2_sm_'.$_group_slug,
 									'type' => 'switch',
@@ -383,6 +385,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 									'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
 									"default" 		=> false,
 								),
+								**/
 								
 								array(
 								    'id'       => 'fullsz_sm_'.$_group_slug,
@@ -450,6 +453,8 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 									"max" 		=> "2000",
 								),
 								
+								
+								/** RETINA OPTION
 								array(
 									'id'=>'x2_med_'.$_group_slug,
 									'type' => 'switch',
@@ -457,6 +462,8 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 									'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
 									"default" 		=> false,
 								),
+								**/
+								
 								
 								array(
 								    'id'       => 'fullsz_med_'.$_group_slug,
@@ -523,6 +530,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 									"max" 		=> "2000",
 								),
 								
+								/** RETINA OPTION
 								array(
 									'id'=>'x2_lg_'.$_group_slug,
 									'type' => 'switch',
@@ -530,6 +538,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 									'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
 									"default" 		=> false,
 								),
+								**/
 								
 								array(
 								    'id'       => 'fullsz_lg_'.$_group_slug,
@@ -594,6 +603,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 									"max" 		=> "2000",
 								),
 								
+								/** RETINA OPTION
 								array(
 									'id'=>'x2_xl_'.$_group_slug,
 									'type' => 'switch', 
@@ -601,6 +611,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 									'desc' => __('<span style="color:red;font-weight:bold;">If enabled, be sure to set the Retina (x2) image size below NOT the regular (x1) size. We will create the x1 for you.</span>', $this->text_domain),
 									"default" 		=> false,
 								),
+								**/
 								
 								array(
 								    'id'       => 'fullsz_xl_'.$_group_slug,

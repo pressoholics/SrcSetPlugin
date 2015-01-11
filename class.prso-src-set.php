@@ -339,11 +339,17 @@ class PrsoSrcSet {
     * @author	Ben Moody
     */
     private function register_image_sizes() {
-	    
+	    global $_wp_additional_image_sizes;
 	    //Init vars
 	    $image_name = NULL;
 	    $image_w	= NULL;
 	    $image_h	= NULL;
+		
+		// Create retina sizes for existing image sizes
+		$existing_image_sizes = $this->get_image_sizes();
+		foreach ($existing_image_sizes as $image_size => $image_size_data ) {
+			add_image_size($image_size . '-@2', $image_size_data['width'] * 2, $image_size_data['height'] * 2, $image_size_data['crop'] );
+		}
 	    
 	    //Loop image groups and setup image sizes
 	    if( !empty(self::$class_config['img_groups']) && is_array(self::$class_config['img_groups']) ) {
@@ -392,6 +398,39 @@ class PrsoSrcSet {
 	    }
 	    
     }
+	
+	function get_image_sizes( $size = '' ) {
+		global $_wp_additional_image_sizes;
+
+        $sizes = array();
+        $get_intermediate_image_sizes = get_intermediate_image_sizes();
+
+        // Create the full array with sizes and crop info
+        foreach( $get_intermediate_image_sizes as $_size ) {
+
+			if ( in_array( $_size, array( 'thumbnail', 'medium', 'large' ) ) ) {
+				$sizes[ $_size ]['width'] = get_option( $_size . '_size_w' );
+				$sizes[ $_size ]['height'] = get_option( $_size . '_size_h' );
+				$sizes[ $_size ]['crop'] = (bool) get_option( $_size . '_crop' );
+			} elseif ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+				$sizes[ $_size ] = array( 
+						'width' => $_wp_additional_image_sizes[ $_size ]['width'],
+						'height' => $_wp_additional_image_sizes[ $_size ]['height'],
+						'crop' =>  $_wp_additional_image_sizes[ $_size ]['crop']
+				);
+			}
+        }
+
+        // Get only 1 size if found
+        if ( $size ) {
+			if( isset( $sizes[ $size ] ) ) {
+					return $sizes[ $size ];
+			} else {
+					return false;
+			}
+        }
+        return $sizes;
+	}
         
 	/**
 	* load_redux_options_framework

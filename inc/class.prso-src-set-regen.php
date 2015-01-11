@@ -157,11 +157,15 @@ class PrsoSrcSetRegen {
 				
 				// We are only dealing with WP Attachments
 				if ( $is_attachment ) {
+					
+					// retrieve image size
+					$has_size = preg_match( '/class=\"[\w\W]*?size-(\w+)[\w\W]*?\"/i', $image, $size_matches );
+				
 					// Strip old srcset attribute if exists
 					$stripped_image = preg_replace( '/\s*srcset=\"[\w\W]*?\"/i', '', $image );
 					
 					// Generate the new srcset attribute
-					$new_image = PrsoSrcSet::render_img_tag_html( $stripped_image, 'Full', $id_matches[1]);
+					$new_image = PrsoSrcSet::render_img_tag_html( $stripped_image, $size_matches[1], $id_matches[1]);
 					
 					// Replace the old <img> tag with the new one
 					$content = str_replace( $image, $new_image, $content );

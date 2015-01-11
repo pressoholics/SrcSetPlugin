@@ -1,122 +1,70 @@
-
-
-
-
-!!! HEY DONT FORGET THE PLUGIN NAME BELOW !!!!
-
-
-
-
-=== YOUR PLUGIN NAME HERE by Benjamin Moody ===
-Contributors: ben.moody, ew_holmes
+=== TrueNorth SrcSet Plugin ===
+Contributors: ben.moody,ew_holmes
+Tags: srcset,responsive,responsive images,srcset attribute,retina,retina images
+Requires at least: 3.0
+Tested up to: 4.1
+Stable tag: 1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
-Tags: 
-Requires at least: 3.0
-Tested up to: 3.8
-Stable tag: 1.0
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+TrueNorth SrcSet Wordpress Plugin allows you to change the dimensions of images based on browser size by automatically adding the srcset attribute.
 
 == Description ==
+TrueNorth SrcSet Wordpress Plugin allows you to change the dimensions of images based on the current width of the users browser. When you assign a SrcSet group to an image size within Wordpress (e.g. medium or large). Any image within a post or page using that image size will have the SrcSet group's attribute applied to it.
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+[youtube http://www.youtube.com/watch?v=2JTaunYbt1M]
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
+= Why use SrcSet? =
 
-A few notes about the sections above:
+The srcset attribute is fully supported by most modern mobile devices. Where the attribute shines is allowing developers and content creators to swap out large images for smaller ones more suitable to the size of the devices screen. This allows for less overhead when loading a website, improving load times, and reducing the amount of bandwidth visitors have to consume to view the site.
 
-*   "Contributors" is a comma separated list of wp.org/wp-plugins.org usernames
-*   "Tags" is a comma separated list of tags that apply to the plugin
-*   "Requires at least" is the lowest version that the plugin will work on
-*   "Tested up to" is the highest version that you've *successfully used to test the plugin*. Note that it might work on
-higher versions... this is just the highest one you've verified.
-*   Stable tag should indicate the Subversion "tag" of the latest stable version, or "trunk," if you use `/trunk/` for
-stable.
+= How does TrueNorth SrcSet Plugin Help? =
 
-    Note that the `readme.txt` of the stable tag is the one that is considered the defining one for the plugin, so
-if the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used
-for displaying information about the plugin.  In this situation, the only thing considered from the trunk `readme.txt`
-is the stable tag pointer.  Thus, if you develop in trunk, you can update the trunk `readme.txt` to reflect changes in
-your in-development version, without having that information incorrectly disclosed about the current stable version
-that lacks those changes -- as long as the trunk's `readme.txt` points to the correct stable tag.
+The TrueNorth SrcSet Wordpress Plugin automates the generation of the srcset attribute for all images attached to or within a post/page\'s content. SrcSet groups can be setup for any image size registered with Wordpress and once setup all images using that image size (e.g. \'medium\') will have that SrcSet group\'s attribute added to the img tag. No short codes, in fact no coding required at all!
 
-    If no stable tag is provided, it is assumed that trunk is stable, but you should specify "trunk" if that's where
-you put the stable version, in order to eliminate any doubt.
+= What about all my existing post images? =
+
+The TrueNorth SrcSet Wordpress Plugin comes with a Regeneration tool which will search all your posts and pages (including custom post types) find any images using sizes which have SrcSet groups and automatically add the srcset attribute to each one!
 
 == Installation ==
-
-This section describes how to install the plugin and get it working.
-
-e.g.
-
-1. Upload `plugin-name.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
+1. Upload to the `/wp-content/plugins/` directory
+2. Activate the plugin through the \'Plugins\' menu in WordPress
+3. Go to Tools > SrcSet Settings and create a new SrcSet group under the \'General\' options tab and click \'save changes\'
+4. Click the group options tab on the left for your new SrcSet group.
+5. You want to create the srcset for all \"large\" images, so link this group to the \'large\' image size be selecting it from the \'Image Size Relationship\' drop down menu.
+6. We need to tell the browser which image size to use when the browser size changes, start by selecting the \'small\' breakpoint from the \'Select Breakpoint\' drop down menu.
+7. The default browser width for this breakpoint is 640px wide. We can leave this or use the \'Breakpoint Width\' slider to customize this.
+8. Now we need to tell the browser which image size we want it to display at this breakpoint. Using the \'Breakpoint Image Size\' drop down menu we can either select an image size already registered with Wordpress OR we can create a new custom image size.
+9. !!Important!! If you create a custom image size for any of your breakpoints you will have to regenerate your image thumbnails using a plugin such as \"Regen. Thumbnails\"
+10. Complete steps 5 & 6 for each breakpoint (small, medium, large, large)
+11. Save your SrcSet group options.
+12. All existing posts/pages which have \"large\" images embedded in them will need to be converted to use your new SrcSet group.
+13. !!Warning!! Backup your database BEFORE this step as the process is irreversible!! Click the \'Regeneration\' tab in the plugin options on the left. Click the \'Regenerate srcset\' button and wait for the process to complete. Now all your existing posts using \"large\" images are now using your SrcSet group!
+14. Now whenever a user adds an image using the \"large\" size into a post/page content, the img html tag will also have your SrcSet group attribute added to it automatically!
 
 == Frequently Asked Questions ==
+= What are SrcSet groups? =
+SrcSet groups allow you to change the dimensions of images based on the current width of the user\'s browser. When you assign a SrcSet group to an image size within Wordpress (e.g. medium or large). Any image within a post or page using that image size will have the SrcSet group\'s attribute applied to it.
 
-= A question that someone might have =
+For example, this 'medium' image...
 
-An answer to that question.
+img class=\"alignnone size-medium wp-image-1264\" src=\"http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg\" alt=\"test_img\" width=\"200\" height=\"150\"
 
-= What about foo bar? =
+Would change to something like this…
 
-Answer to foo bar dilemma.
+img class="alignnone size-medium wp-image-1264\" 
+src=\"http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg\" 
+srcset=\"http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-125x125.jpeg 640w,
+http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg 1024w,
+http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img.jpeg 1440w,
+http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-1440x1200.jpeg 1506w\" 
+alt=\"test_img\" width=\"200\" height=\"150\"
 
-== Screenshots ==
+Note that the 'srcset' attribute had been added to the img tag and will instruct the browser to replace the image with different sizes at these breakpoints, 640w, 1024w, 1440w, and 1506w.
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets 
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png` 
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+= Need help setting up a SrcSet Group? =
+In the plugin options under Tools > SrcSet Settings, click the 'Help' tab on the left and following the instructions for more examples.
 
 == Changelog ==
-
 = 1.0 =
-* A change since the previous version.
-* Another change.
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
-
-== Upgrade Notice ==
-
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`
+Initial plugin launch.

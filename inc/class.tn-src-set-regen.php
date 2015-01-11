@@ -1,14 +1,14 @@
 <?php
 /**
- * Class: PrsoSrcSetRegen
+ * Class: TNSrcSetRegen
  * 
  * This class handles the regeneration of srcset attributes within post content.
  *
  * @author Eric
  */
-class PrsoSrcSetRegen {
+class TNSrcSetRegen {
 	
-	const REGEN_AJAX_ACTION = 'prso-srcset-regenerate';
+	const REGEN_AJAX_ACTION = 'tn-srcset-regenerate';
 	
 	/**
 	 * This is the callback for a Redux framework section. Here we will regenerate
@@ -19,10 +19,10 @@ class PrsoSrcSetRegen {
 	 */
 	public static function render_regeneration_section( $field, $value ) {
 		?>
-		<h3><?php _e( "Warning:", PRSOSRCSET__DOMAIN ) ?></h3>
-		<p><strong><?php _e( "This feature directly modifies your post content HTML. It is highly recommended that you do a database backup before running this feature.", PRSOSRCSET__DOMAIN ) ?></strong></p>
+		<h3><?php _e( "Warning:", TNSRCSET__DOMAIN ) ?></h3>
+		<p><strong><?php _e( "This feature directly modifies your post content HTML. It is highly recommended that you do a database backup before running this feature.", TNSRCSET__DOMAIN ) ?></strong></p>
 
-		<p><a class="button button-primary os-srcset-regen" rel="regenerate-srcset" href="javascript:void(0);"><?php _ex( 'Regenerate srcset', 'text', PRSOSRCSET__DOMAIN ); ?></a></p>
+		<p><a class="button button-primary os-srcset-regen" rel="regenerate-srcset" href="javascript:void(0);"><?php _ex( 'Regenerate srcset', 'text', TNSRCSET__DOMAIN ); ?></a></p>
 		<span class="spinner pull-content" style="float:left;"></span>
 		<div id="os-srcset-regen-status">
 			<p class="progress"></p>
@@ -41,15 +41,15 @@ class PrsoSrcSetRegen {
 	}
 	
 	function enqueue_admin_scripts(){
-		wp_enqueue_script( 'prso-srcset-admin', plugin_dir_url( __FILE__ ). '/js/prso-srcset-admin.js', array( 'jquery' ), '1.0', true );
-		wp_localize_script( 'prso-srcset-admin', 'PrsoSrcSetData', array(
+		wp_enqueue_script( 'tn-srcset-admin', plugin_dir_url( __FILE__ ). '/js/tn-srcset-admin.js', array( 'jquery' ), '1.0', true );
+		wp_localize_script( 'tn-srcset-admin', 'TNSrcSetData', array(
 			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 			'ajaxAction' => self::REGEN_AJAX_ACTION,
 			'messages' => array(
-				'start' => __( 'Starting&hellip;', PRSOSRCSET__DOMAIN ),
-				'progress' => __( 'Progress: %d/%d', PRSOSRCSET__DOMAIN ),
-				'complete' => __( 'Complete!', PRSOSRCSET__DOMAIN ),
-				'error' => __( 'Something went wrong. Please try again.', PRSOSRCSET__DOMAIN )
+				'start' => __( 'Starting&hellip;', TNSRCSET__DOMAIN ),
+				'progress' => __( 'Progress: %d/%d', TNSRCSET__DOMAIN ),
+				'complete' => __( 'Complete!', TNSRCSET__DOMAIN ),
+				'error' => __( 'Something went wrong. Please try again.', TNSRCSET__DOMAIN )
 			)
 		) );
 	}
@@ -114,7 +114,7 @@ class PrsoSrcSetRegen {
 					$stripped_image = preg_replace( '/\s*srcset=\"[\w\W]*?\"/i', '', $image );
 					
 					// Generate the new srcset attribute
-					$new_image = PrsoSrcSet::render_img_tag_html( $stripped_image, $size_matches[1], $id_matches[1]);
+					$new_image = TNSrcSet::render_img_tag_html( $stripped_image, $size_matches[1], $id_matches[1]);
 					
 					// Replace the old <img> tag with the new one
 					$content = str_replace( $image, $new_image, $content );
@@ -129,4 +129,4 @@ class PrsoSrcSetRegen {
 		wp_send_json_success( $output );
 	}
 }
-new PrsoSrcSetRegen;
+new TNSrcSetRegen;

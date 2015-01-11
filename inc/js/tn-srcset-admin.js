@@ -1,5 +1,5 @@
 ;
-var PrsoSrcSetData = PrsoSrcSetData || {};
+var TNSrcSetData = TNSrcSetData || {};
 
 (function($, localized){
 	
@@ -79,4 +79,4 @@ var PrsoSrcSetData = PrsoSrcSetData || {};
 	 * 
 	 */
 	
-})(jQuery, PrsoSrcSetData);
+})(jQuery, TNSrcSetData);

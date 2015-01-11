@@ -1,12 +1,12 @@
 <?php
-class PrsoSrcSet {
+class TNSrcSet {
 	
 	protected static $class_config 				= array();
 	protected $current_screen					= NULL;
-	protected $plugin_ajax_nonce				= 'prso_src_set-ajax-nonce';
-	protected $plugin_path						= PRSOSRCSET__PLUGIN_DIR;
-	protected $plugin_url						= PRSOSRCSET__PLUGIN_URL;
-	protected $plugin_textdomain				= PRSOSRCSET__DOMAIN;
+	protected $plugin_ajax_nonce				= 'tnsrc_set-ajax-nonce';
+	protected $plugin_path						= TNSRCSET__PLUGIN_DIR;
+	protected $plugin_url						= TNSRCSET__PLUGIN_URL;
+	protected $plugin_textdomain				= TNSRCSET__DOMAIN;
 	
 	function __construct( $config = array() ) {
 		
@@ -82,8 +82,8 @@ class PrsoSrcSet {
 		//Filter TINYMCE allowed attributes for img tag
 		add_filter('tiny_mce_before_init', array($this, 'add_tinymce_attributes'));
 		
-		//prso_debug(get_intermediate_image_sizes());
-		//prso_debug(self::$class_config);
+		//tndebug(get_intermediate_image_sizes());
+		//tndebug(self::$class_config);
 		//exit();
 		
 	}
@@ -612,7 +612,7 @@ class PrsoSrcSet {
 	protected function localize_script() {
 		
 		//Init vars
-		$object 	= 'PrsoPluginFrameworkVars';
+		$object 	= 'TNPluginFrameworkVars';
 		$js_vars	= array();
 		
 		//Localize vars for ajax requests

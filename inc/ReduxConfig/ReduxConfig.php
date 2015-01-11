@@ -1,17 +1,7 @@
 <?php
-/**
-	!!!HOW TO SETUP!!!
-	
-	Replace PrsoPluginFrameworkOptionConfig with your plugin slug to create unique class name!!!
-	
-	*Also update the $text_domain arg for this unique plugin!!
-	*Also update the $options_name arg for this unique plugin!!
-	
-**/
-
 
 /**
-	ReduxFramework Sample Config File
+	ReduxFramework Config File
 	For full documentation, please visit: https://github.com/ReduxFramework/ReduxFramework/wiki
 **/
 
@@ -19,15 +9,15 @@ if ( !class_exists( "ReduxFramework" ) ) {
 	return;
 } 
 
-if ( !class_exists( "PrsoSrcSetOptions" ) ) {
-	class PrsoSrcSetOptions {
+if ( !class_exists( "TNSrcSetOptions" ) ) {
+	class TNSrcSetOptions {
 
 		public $args = array();
 		public $sections = array();
 		public $theme;
 		public $ReduxFramework;
-		public $text_domain 	= PRSOSRCSET__DOMAIN;
-		public $options_name 	= PRSOSRCSET__OPTIONS_NAME;
+		public $text_domain 	= TNSRCSET__DOMAIN;
+		public $options_name 	= TNSRCSET__OPTIONS_NAME;
 
 		public function __construct( ) {
 
@@ -254,14 +244,14 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 
 
 			//Add dropdown to select which group to use for post content
-			global $prso_src_set_options;
+			global $tnsrc_set_options;
 
-			if( isset($prso_src_set_options['img_groups_instances']) && !empty($prso_src_set_options['img_groups_instances']) ){
+			if( isset($tnsrc_set_options['img_groups_instances']) && !empty($tnsrc_set_options['img_groups_instances']) ){
 				
 				//INit vars
 				$group_select		= array();
 				
-				foreach( $prso_src_set_options['img_groups_instances'] as $_img_group ) {
+				foreach( $tnsrc_set_options['img_groups_instances'] as $_img_group ) {
 					$group_select[$_img_group] = $_img_group;
 				}
 				
@@ -314,10 +304,10 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 			);
 			
 			//Check for number of instances requested and build options for each
-			if( isset($prso_src_set_options['img_groups_instances']) ){
+			if( isset($tnsrc_set_options['img_groups_instances']) ){
 				
 				//Loop each instance and setup options table for each
-				foreach( $prso_src_set_options['img_groups_instances'] as $group_title ) {
+				foreach( $tnsrc_set_options['img_groups_instances'] as $group_title ) {
 					
 					$_group_slug = hash("crc32b", $group_title);
 					
@@ -343,7 +333,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 							
 							array(
 							    'id'       => 'img_size_rel_'.$_group_slug,
-							    'class'	   => 'prso-src-set-img-rel',
+							    'class'	   => 'tn-src-set-img-rel',
 							    'type'     => 'select',
 							    'title'    => __('1. Image Size Relationship', $this->text_domain),
 							    'subtitle' => __('Link this SrcSet group with an existing Wordpress image size', $this->text_domain),
@@ -671,7 +661,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 			}
 			
 			// Regeneration
-			if ( class_exists( 'PrsoSrcSetRegen' ) ) {
+			if ( class_exists( 'TNSrcSetRegen' ) ) {
 				$this->sections[] = array(
 					'title' => __('Regeneration', $this->text_domain),
 					'desc' => __('Regenerate srcset attributes of all images within post content. <strong>THIS IS NOT REVERSABLE</strong>.', $this->text_domain),
@@ -682,7 +672,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 							'id'=>'img_groups_instances',
 							'type' => 'callback',
 							'title' => __('Manage Image Size Groups', $this->text_domain),
-							'callback' => array( 'PrsoSrcSetRegen', 'render_regeneration_section' )
+							'callback' => array( 'TNSrcSetRegen', 'render_regeneration_section' )
 						)
 					)
 				);
@@ -820,7 +810,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 
 		}
 	}
-	new PrsoSrcSetOptions();
+	new TNSrcSetOptions();
 
 }
 

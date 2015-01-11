@@ -71,7 +71,7 @@ class PrsoSrcSetRegen {
 		// Remove Attachments
 		unset($post_types['attachment']);
 		
-		$post_types = apply_filters( 'prso_srcset_regen_post_types', $post_types, $current_page );
+		$post_types = apply_filters( 'tn_srcset_regen_post_types', $post_types, $current_page );
 		
 		$output['postTypes'] = $post_types;
 		

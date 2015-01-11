@@ -282,16 +282,16 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 			// ACTUAL DECLARATION OF SECTIONS
 			$this->sections[] = array(
 				'title' => __('General', $this->text_domain),
-				'desc' => __('Create a new image sizes group by adding a title below, then "Save Changes". New option sections will be created in the sidebar on the left for each group added.', $this->text_domain),
+				'desc' => __('Create a SrcSet group by adding a title below, then "Save Changes". New options will be created in the sidebar on the left for each group added.', $this->text_domain),
 				'icon' => 'el-icon-home',
 			    // 'submenu' => false, // Setting submenu to false on a given section will hide it from the WordPress sidebar menu!
 				'fields' => array(
 					array(
 						'id'=>'img_groups_instances',
 						'type' => 'multi_text',
-						'title' => __('Manage Image Size Groups', $this->text_domain),
+						'title' => __('Manage SrcSet Groups', $this->text_domain),
 						'validate' => 'no_special_chars',
-						'subtitle' => __('Add and remove image groups. Enter title for each group then click "Save Changes" to create options more options for each group.', $this->text_domain),
+						'subtitle' => __('Add and remove SrcSet groups. Enter title for each group then click "Save Changes" to create options more options for each group.', $this->text_domain),
 						'desc' => __('Add unique title for each group. Tip: Keep it short', $this->text_domain)
 					)
 				)
@@ -326,21 +326,12 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						'fields' => array(
 							
 							array(
-							    'id'    => 'info_normal',
-							    'type'  => 'info',
-							    'style' => 'success',
-							    'title' => __('NOTE', 'redux-framework-demo'),
-							    'icon'  => 'el-icon-info-sign',
-							    'desc'  => sprintf( __( 'When using a registered custom image size you MUST assign this SrcSet group to that image size <br/>with the relationship option below.', $this->text_domain ), sanitize_title($group_title) )
-							),
-							
-							array(
 							    'id'       => 'img_size_rel_'.$_group_slug,
 							    'class'	   => 'prso-src-set-img-rel',
 							    'type'     => 'select',
-							    'title'    => __('Custom Image Size Relationship', $this->text_domain),
-							    'subtitle' => __('Link this image group with an existing custom image size', $this->text_domain),
-							    'desc'     => __('Selected image size will be associated with this image group. All images using this custom size will have this srcset group applied to them. <br/><span style="color:red;font-weight:bold;">(An Image size can only be assigned to a single SrcSet group at a time)</span>', $this->text_domain),
+							    'title'    => __('1. Image Size Relationship', $this->text_domain),
+							    'subtitle' => __('Link this SrcSet group with an existing Wordpress image size', $this->text_domain),
+							    'desc'     => __('Selected wordpress image size will be associated with this SrcSet group. All images using this size will have this SrcSet group applied to them. <br/><span style="color:red;font-weight:bold;">(An Image size can only be assigned to a single SrcSet group at a time)</span>', $this->text_domain),
 							    // Must provide key => value pairs for select options
 							    'options'  => $rel_img_sizes,
 							    'default'  => 'full',
@@ -349,8 +340,8 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 							array(
 								'id'=>'size_select'.$_group_slug,
 								'type' => 'select',
-								'title' => __('Select Breakpoint', $this->text_domain),
-								'desc' => __('Select group breakpoint to edit', $this->text_domain),
+								'title' => __('2. Select Breakpoint', $this->text_domain),
+								'desc' => __('Select a browser width breakpoint to edit', $this->text_domain),
 								'options' => array('small' => 'Small','medium' => 'Medium','large' => 'Large','xlarge' => 'X Large'),
 								'default' => ''
 							),
@@ -368,8 +359,8 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						        array(
 									'id'=>'bp_sm_'.$_group_slug,
 									'type' => 'slider', 
-									'title' => __('Breakpoint Width', $this->text_domain),
-									'desc'=> __('Breakpoint in px', $this->text_domain),
+									'title' => __('3. Breakpoint Width', $this->text_domain),
+									'desc'=> __('Breakpoint width in px', $this->text_domain),
 									"default" 	=> "640",
 									"min" 		=> "1",
 									"step"		=> "1",
@@ -390,9 +381,9 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 								array(
 								    'id'       => 'fullsz_sm_'.$_group_slug,
 								    'type'     => 'select',
-								    'title'    => __('Intermidiate Image Size', $this->text_domain),
+								    'title'    => __('4. Breakpoint Image Size', $this->text_domain),
 								    'subtitle' => __('Select image size to use for this breakpoint', $this->text_domain),
-								    'desc'     => __('You can select an existing custom image size or choose Custom to create a new image size.', $this->text_domain),
+								    'desc'     => __('You can select an existing Wordpress image size or choose Custom to create a new image size.', $this->text_domain),
 								    // Must provide key => value pairs for select options
 								    'options'  => $img_sizes,
 								    'default'  => 'full',
@@ -445,7 +436,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						        array(
 									'id'=>'bp_med_'.$_group_slug,
 									'type' => 'slider', 
-									'title' => __('Breakpoint Width', $this->text_domain),
+									'title' => __('3. Breakpoint Width', $this->text_domain),
 									'desc'=> __('Breakpoint in px', $this->text_domain),
 									"default" 	=> "1024",
 									"min" 		=> "1",
@@ -468,9 +459,9 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 								array(
 								    'id'       => 'fullsz_med_'.$_group_slug,
 								    'type'     => 'select',
-								    'title'    => __('Intermidiate Image Size', $this->text_domain),
+								    'title'    => __('4. Breakpoint Image Size', $this->text_domain),
 								    'subtitle' => __('Select image size to use for this breakpoint', $this->text_domain),
-								    'desc'     => __('You can select an existing custom image size or choose Custom to create a new image size.', $this->text_domain),
+								    'desc'     => __('You can select an existing Wordpress image size or choose Custom to create a new image size.', $this->text_domain),
 								    // Must provide key => value pairs for select options
 								    'options'  => $img_sizes,
 								    'default'  => 'full',
@@ -522,7 +513,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						        array(
 									'id'=>'bp_lg_'.$_group_slug,
 									'type' => 'slider', 
-									'title' => __('Breakpoint Width', $this->text_domain),
+									'title' => __('3. Breakpoint Width', $this->text_domain),
 									'desc'=> __('Breakpoint in px', $this->text_domain),
 									"default" 	=> "1440",
 									"min" 		=> "1",
@@ -543,9 +534,9 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 								array(
 								    'id'       => 'fullsz_lg_'.$_group_slug,
 								    'type'     => 'select',
-								    'title'    => __('Intermidiate Image Size', $this->text_domain),
+								    'title'    => __('4. Breakpoint Image Size', $this->text_domain),
 								    'subtitle' => __('Select image size to use for this breakpoint', $this->text_domain),
-								    'desc'     => __('You can select an existing custom image size or choose Custom to create a new image size.', $this->text_domain),
+								    'desc'     => __('You can select an existing Wordpress image size or choose Custom to create a new image size.', $this->text_domain),
 								    // Must provide key => value pairs for select options
 								    'options'  => $img_sizes,
 								    'default'  => 'full',
@@ -595,7 +586,7 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 						        array(
 									'id'=>'bp_xl_'.$_group_slug,
 									'type' => 'slider', 
-									'title' => __('Breakpoint Width', $this->text_domain),
+									'title' => __('3. Breakpoint Width', $this->text_domain),
 									'desc'=> __('Breakpoint in px', $this->text_domain),
 									"default" 	=> "1920",
 									"min" 		=> "1",
@@ -616,9 +607,9 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 								array(
 								    'id'       => 'fullsz_xl_'.$_group_slug,
 								    'type'     => 'select',
-								    'title'    => __('Intermidiate Image Size', $this->text_domain),
+								    'title'    => __('4. Breakpoint Image Size', $this->text_domain),
 								    'subtitle' => __('Select image size to use for this breakpoint', $this->text_domain),
-								    'desc'     => __('You can select an existing custom image size or choose Custom to create a new image size.', $this->text_domain),
+								    'desc'     => __('You can select an existing Wordpress image size or choose Custom to create a new image size.', $this->text_domain),
 								    // Must provide key => value pairs for select options
 								    'options'  => $img_sizes,
 								    'default'  => 'full',
@@ -726,12 +717,12 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 	            
 	            // TYPICAL -> Change these values as you need/desire
 				'opt_name'          	=> $this->options_name, // This is where your data is stored in the database and also becomes your global variable name.
-				'display_name'			=> 'SRCSET Plugin', // Name that appears at the top of your panel
+				'display_name'			=> 'TrueNorth SrcSet Plugin', // Name that appears at the top of your panel
 				'display_version'		=> '1.0', // Version that appears at the top of your panel
 				'menu_type'          	=> 'menu', //Specify if the admin menu should appear or not. Options: menu or submenu (Under appearance only)
 				'allow_sub_menu'     	=> true, // Show the sections below the admin menu item or not
-				'menu_title'			=> __( 'SRCSET Settings', $this->text_domain ),
-	            'page'		 	 		=> __( 'SRCSET Settings', $this->text_domain ),
+				'menu_title'			=> __( 'SrcSet Settings', $this->text_domain ),
+	            'page'		 	 		=> __( 'SrcSet Settings', $this->text_domain ),
 	            'google_api_key'   	 	=> '', // Must be defined to add google fonts to the typography module
 	            'global_variable'    	=> '', // Set a different name for your global variable other than the opt_name
 	            'dev_mode'           	=> false, // Show the time the page took to load, etc
@@ -739,8 +730,8 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 
 	            // OPTIONAL -> Give you extra features
 	            'page_priority'      	=> null, // Order where the menu appears in the admin area. If there is any conflict, something will not show. Warning.
-	            'page_type'   			=> 'menu', // set to “menu” for a top level menu, or “submenu” to add below an existing item
-	            'page_parent'        	=> 'themes.php', // For a full list of options, visit: http://codex.wordpress.org/Function_Reference/add_submenu_page#Parameters
+	            'page_type'   			=> 'submenu', // set to “menu” for a top level menu, or “submenu” to add below an existing item
+	            'page_parent'        	=> 'tools.php', // For a full list of options, visit: http://codex.wordpress.org/Function_Reference/add_submenu_page#Parameters
 	            'page_permissions'   	=> 'manage_options', // Permissions needed to access the options panel.
 	            'menu_icon'          	=> '', // Specify a custom URL to an icon
 	            'last_tab'           	=> '', // Force your panel to always open to a specific tab (by id)
@@ -805,11 +796,11 @@ if ( !class_exists( "PrsoSrcSetOptions" ) ) {
 				}
 				$this->args['intro_text'] = sprintf( __('<p>Did you know that Redux sets a global variable for you? To access any of your saved options from within your code you can use your global variable: <strong>$%1$s</strong></p>', $this->text_domain ), $v );
 			} else {
-				$this->args['intro_text'] = __('<p>This text is displayed above the options panel. It isn\'t required, but more info is always better! The intro_text field accepts all HTML.</p>', $this->text_domain);
+				//$this->args['intro_text'] = __('<p>This text is displayed above the options panel. It isn\'t required, but more info is always better! The intro_text field accepts all HTML.</p>', $this->text_domain);
 			}
 
 			// Add content after the form.
-			$this->args['footer_text'] = __('<p>This text is displayed below the options panel. It isn\'t required, but more info is always better! The footer_text field accepts all HTML.</p>', $this->text_domain);
+			//$this->args['footer_text'] = __('<p>This text is displayed below the options panel. It isn\'t required, but more info is always better! The footer_text field accepts all HTML.</p>', $this->text_domain);
 
 		}
 	}

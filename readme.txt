@@ -50,16 +50,16 @@ SrcSet groups allow you to change the dimensions of images based on the current 
 
 For example, this 'medium' image...
 
-img class=\"alignnone size-medium wp-image-1264\" src=\"http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg\" alt=\"test_img\" width=\"200\" height=\"150\"
+img class=\"alignnone size-medium wp-image-1264\" src=\"http://www.domain.com/wp-content/uploads/2011/05/test_img-200x150.jpeg\" alt=\"test_img\" width=\"200\" height=\"150\"
 
 Would change to something like this…
 
 img class="alignnone size-medium wp-image-1264\" 
-src=\"http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg\" 
-srcset=\"http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-125x125.jpeg 640w,
-http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-200x150.jpeg 1024w,
-http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img.jpeg 1440w,
-http://www.pressoholics.dev/wp-content/uploads/2011/05/test_img-1440x1200.jpeg 1506w\" 
+src=\"http://www.domain.com/wp-content/uploads/2011/05/test_img-200x150.jpeg\" 
+srcset=\"http://www.domain.com/wp-content/uploads/2011/05/test_img-125x125.jpeg 640w,
+http://www.domain.com/wp-content/uploads/2011/05/test_img-200x150.jpeg 1024w,
+http://www.domain.com/wp-content/uploads/2011/05/test_img.jpeg 1440w,
+http://www.domain.com/wp-content/uploads/2011/05/test_img-1440x1200.jpeg 1506w\" 
 alt=\"test_img\" width=\"200\" height=\"150\"
 
 Note that the 'srcset' attribute had been added to the img tag and will instruct the browser to replace the image with different sizes at these breakpoints, 640w, 1024w, 1440w, and 1506w.

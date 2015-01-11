@@ -30,13 +30,22 @@ var PrsoSrcSetData = PrsoSrcSetData || {};
 		regenBatch();
 	}
 	
+	/**
+	 * Update the progess message of the regeneration.
+	 * 
+	 * @returns {undefined}
+	 */
 	function updateProgress() {
 		var message = localized.messages.progress;
-		message = message.replace(/\%d/, completedPosts).replace(/\%d/, totalPosts);
+		message = message.replace(/\%d/, Math.min(totalPosts,completedPosts)).replace(/\%d/, totalPosts);
 		$progress.html(message);
 		$message.html('');
 	}
 	
+	/**
+	 * Run an AJAX regeneration batch.
+	 * @returns {undefined}
+	 */
 	function regenBatch(){
 		$.ajax({
 			url: localized.ajaxUrl,

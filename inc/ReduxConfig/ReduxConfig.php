@@ -333,7 +333,7 @@ if ( !class_exists( "TNSrcSetOptions" ) ) {
 							
 							array(
 							    'id'       => 'img_size_rel_'.$_group_slug,
-							    'class'	   => 'tn-src-set-img-rel',
+							    'class'	   => 'tn-srcset-img-rel',
 							    'type'     => 'select',
 							    'title'    => __('1. Image Size Relationship', $this->text_domain),
 							    'subtitle' => __('Link this SrcSet group with an existing Wordpress image size', $this->text_domain),

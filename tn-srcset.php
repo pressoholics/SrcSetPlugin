@@ -23,8 +23,8 @@ define( 'TNSRCSET__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TNSRCSET__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 //Include plugin classes
-require_once( TNSRCSET__PLUGIN_DIR . 'class.tn-src-set.php' );
-require_once( TNSRCSET__PLUGIN_DIR . 'inc/class.tn-src-set-regen.php' );
+require_once( TNSRCSET__PLUGIN_DIR . 'class.tn-srcset.php' );
+require_once( TNSRCSET__PLUGIN_DIR . 'inc/class.tn-srcset-regen.php' );
 
 //Set Activation/Deactivation hooks
 register_activation_hook( __FILE__, array( 'TNSrcSet', 'plugin_activation' ) );

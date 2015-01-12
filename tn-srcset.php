@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: SrcSet Plugin
+ * Plugin Name: TrueNorth SrcSet Plugin
  * Plugin URI: 
  * Description: SrcSet Plugin allows you to change the dimensions of images based on browser size by automatically adding the srcset attribute.
  * Author: Benjamin Moody, Eric Holmes

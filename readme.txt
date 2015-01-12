@@ -1,4 +1,4 @@
-=== TrueNorth SrcSet Plugin ===
+=== TrueNorth SrcSet for Wordpress ===
 Contributors: ben.moody,ew_holmes
 Tags: srcset,responsive,responsive images,srcset attribute,retina,retina images
 Requires at least: 3.0
@@ -7,10 +7,10 @@ Stable tag: 1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
-TrueNorth SrcSet Wordpress Plugin allows you to change the dimensions of images based on browser size by automatically adding the srcset attribute.
+TrueNorth SrcSet for Wordpress Plugin allows you to change the dimensions of images based on browser size by automatically adding the srcset attribute.
 
 == Description ==
-TrueNorth SrcSet Wordpress Plugin allows you to change the dimensions of images based on the current width of the users browser. When you assign a SrcSet group to an image size within Wordpress (e.g. medium or large). Any image within a post or page using that image size will have the SrcSet group's attribute applied to it.
+TrueNorth SrcSet for Wordpress Plugin allows you to change the dimensions of images based on the current width of the users browser. When you assign a SrcSet group to an image size within Wordpress (e.g. medium or large). Any image within a post or page using that image size will have the SrcSet group's attribute applied to it.
 
 [youtube http://www.youtube.com/watch?v=2JTaunYbt1M]
 

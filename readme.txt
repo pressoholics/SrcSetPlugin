@@ -43,6 +43,12 @@ The TrueNorth SrcSet Wordpress Plugin comes with a Regeneration tool which will 
 13. !!Warning!! Backup your database BEFORE this step as the process is irreversible!! Click the 'Regeneration' tab in the plugin options on the left. Click the 'Regenerate srcset' button and wait for the process to complete. Now all your existing posts using "large" images are now using your SrcSet group!
 14. Now whenever a user adds an image using the "large" size into a post/page content, the img html tag will also have your SrcSet group attribute added to it automatically!
 
+= Uninstall =
+1. Go to Tools > SrcSet Settings
+2. Click "Regeneration" tab on the left of options page
+3. Select "Uninstall srcset" from dropdown option
+4. !!Warning!! Backup your database BEFORE this step as the process is irreversible!! Click the 'Regenerate srcset' button
+5. You can now uninstall the plugin
 
 == Frequently Asked Questions ==
 = What are SrcSet groups? =
@@ -69,6 +75,13 @@ Note that the 'srcset' attribute had been added to the img tag and will instruct
 
 If the images were already uploaded to the Media Library, you may have to regenerate thumbnails. We recommend using [Regenerate Thumbnails](https://wordpress.org/plugins/regenerate-thumbnails/ "Regenerate Thumbnails") for this.
 
+= How do I uninstall and remove the srcset attributes from my images? =
+
+1. Go to Tools > SrcSet Settings
+2. Click "Regeneration" tab on the left of options page
+3. Select "Uninstall srcset" from dropdown option
+4. !!Warning!! Backup your database BEFORE this step as the process is irreversible!! Click the 'Regenerate srcset' button
+5. You can now uninstall the plugin
 
 = What are Image Groups? =
 

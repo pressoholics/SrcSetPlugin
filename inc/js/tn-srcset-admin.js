@@ -10,7 +10,8 @@ var TNSrcSetData = TNSrcSetData || {};
 	
 	var currentPage = 0, // current page index
 		completedPosts = 0, // Completed count
-		totalPosts = 0; // total count
+		totalPosts = 0, // total count
+		regenAction = 0;
 	
 	
 	// Document ready
@@ -26,6 +27,9 @@ var TNSrcSetData = TNSrcSetData || {};
 	function initRegeneration(){
 		$regenButton.hide();
 		$message.html(localized.messages.start);
+		
+		//Cache unistall checkbox val
+		regenAction = $('.uninstall-srcset').val();
 		
 		regenBatch();
 	}
@@ -52,7 +56,8 @@ var TNSrcSetData = TNSrcSetData || {};
 			dataType: 'json',
 			data: {
 				action: localized.ajaxAction,
-				current_page: currentPage
+				current_page: currentPage,
+				regen_action: regenAction
 			},
 			success: function(response){
 				totalPosts = response.data.totalPosts;

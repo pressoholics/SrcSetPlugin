@@ -671,7 +671,7 @@ if ( !class_exists( "TNSrcSetOptions" ) ) {
 						array(
 							'id'=>'img_groups_instances',
 							'type' => 'callback',
-							'title' => __('Manage Image Size Groups', $this->text_domain),
+							'title' => __('Manage SrcSet Groups', $this->text_domain),
 							'callback' => array( 'TNSrcSetRegen', 'render_regeneration_section' )
 						)
 					)

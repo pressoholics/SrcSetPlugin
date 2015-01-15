@@ -21,7 +21,16 @@ class TNSrcSetRegen {
 		?>
 		<h3><?php _e( "Warning:", TNSRCSET__DOMAIN ) ?></h3>
 		<p><strong><?php _e( "This feature directly modifies your post content HTML. It is highly recommended that you do a database backup before running this feature.", TNSRCSET__DOMAIN ) ?></strong></p>
-
+		
+		<br>
+		
+		 <select class='uninstall-srcset'>
+		  <option value="regen"><?php _ex( 'Regenerate srcset', 'text', TNSRCSET__DOMAIN ); ?></option>
+		  <option value="uninstall"><?php _ex( 'Uninstall srcset', 'text', TNSRCSET__DOMAIN ); ?></option>
+		</select>
+		
+		<br><br>
+		
 		<p><a class="button button-primary os-srcset-regen" rel="regenerate-srcset" href="javascript:void(0);"><?php _ex( 'Regenerate srcset', 'text', TNSRCSET__DOMAIN ); ?></a></p>
 		<span class="spinner pull-content" style="float:left;"></span>
 		<div id="os-srcset-regen-status">
@@ -61,7 +70,8 @@ class TNSrcSetRegen {
 	function ajax_regenerate_batch(){
 		global $post;
 		
-		$current_page = filter_input( INPUT_POST, 'current_page', FILTER_SANITIZE_NUMBER_INT );
+		$current_page 	= filter_input( INPUT_POST, 'current_page', FILTER_SANITIZE_NUMBER_INT );
+		$ren_action 	= esc_attr( $_REQUEST['regen_action'] );
 		
 		$output = array();
 		$images = array();
@@ -107,19 +117,23 @@ class TNSrcSetRegen {
 				// We are only dealing with WP Attachments
 				if ( $is_attachment ) {
 					
-					// retrieve image size
-					$has_size = preg_match( '/class=\"[\w\W]*?size-(\w+)[\w\W]*?\"/i', $image, $size_matches );
-				
-					// Strip old srcset attribute if exists
-					$stripped_image = preg_replace( '/\s*srcset=\"[\w\W]*?\"/i', '', $image );
+					//Check reg action 
+					if( $ren_action === 'uninstall' ) {
+						
+						//Unistall srcset across post
+						$content = $this->get_uninstalled_srcset_content( $image, $id_matches, $content );
+						
+					} else {
+						
+						//Regenerate srcset across post
+						$content = $this->get_regen_content( $image, $id_matches, $content );
+						
+					}
 					
-					// Generate the new srcset attribute
-					$new_image = TNSrcSet::render_img_tag_html( $stripped_image, $size_matches[1], $id_matches[1]);
 					
-					// Replace the old <img> tag with the new one
-					$content = str_replace( $image, $new_image, $content );
 				}
 			}
+			
 			if ( ! wp_update_post( array( 'ID' => get_the_ID(), 'post_content' => $content ) ) ) {
 				// Something went wrong
 				
@@ -128,5 +142,69 @@ class TNSrcSetRegen {
 		wp_reset_query();
 		wp_send_json_success( $output );
 	}
+	
+	/**
+	* get_regen_content
+	* 
+	* Helper to find the image size from it's class, strip out any srcset attr,
+	* Then call the method to regenerate the srcset attr for the image size in question.
+	* Finally replace the old img tag with the new updated tag
+	* 
+	* @param	string	$image
+	* @param	array	$id_matches
+	* @param	string	$content
+	* @return	string	$content
+	* @access 	private
+	* @author	Ben Moody
+	*/
+	private function get_regen_content( $image, $id_matches, $content ) {
+		
+		//Init vars
+		$size_matches	= NULL;
+		$has_size		= NULL;
+		$stripped_image	= NULL;
+		$new_image		= NULL;
+		
+		// retrieve image size
+		$has_size = preg_match( '/class=\"[\w\W]*?size-(\w+)[\w\W]*?\"/i', $image, $size_matches );
+	
+		// Strip old srcset attribute if exists
+		$stripped_image = preg_replace( '/\s*srcset=\"[\w\W]*?\"/i', '', $image );
+		
+		// Generate the new srcset attribute
+		$new_image = TNSrcSet::render_img_tag_html( $stripped_image, $size_matches[1], $id_matches[1]);
+		
+		// Replace the old <img> tag with the new one
+		$content = str_replace( $image, $new_image, $content );
+		
+		return $content;
+	}
+	
+	/**
+	* get_uninstalled_srcset_content
+	* 
+	* Helper to find a srcset tag on an image and remove it. Then replace the img tag in the content
+	* 
+	* @param	string	$image
+	* @param	array	$id_matches
+	* @param	string	$content
+	* @return	string	$content
+	* @access 	private
+	* @author	Ben Moody
+	*/
+	private function get_uninstalled_srcset_content( $image, $id_matches, $content ) {
+		
+		//Init vars
+		$stripped_image	= NULL;
+	
+		// Strip old srcset attribute if exists
+		$stripped_image = preg_replace( '/\s*srcset=\"[\w\W]*?\"/i', '', $image );
+		
+		// Replace the old <img> tag with the new one
+		$content = str_replace( $image, $stripped_image, $content );
+		
+		return $content;
+	}
+	
 }
 new TNSrcSetRegen;

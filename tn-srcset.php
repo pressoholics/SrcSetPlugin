@@ -4,7 +4,7 @@
  * Plugin URI: 
  * Description: SrcSet Plugin allows you to change the dimensions of images based on browser size by automatically adding the srcset attribute.
  * Author: Benjamin Moody, Eric Holmes
- * Version: 1.0
+ * Version: 1.1
  * Author URI: http://www.benjaminmoody.com
  * License: GPL2+
  * Text Domain: tnsrc_set_plugin
@@ -13,7 +13,7 @@
 
 //Define plugin constants
 define( 'TNSRCSET__MINIMUM_WP_VERSION', '3.0' );
-define( 'TNSRCSET__VERSION', '1.0' );
+define( 'TNSRCSET__VERSION', '1.1' );
 define( 'TNSRCSET__DOMAIN', 'tnsrc_set_plugin' );
 
 //Plugin admin options will be available in global var with this name, also is database slug for options

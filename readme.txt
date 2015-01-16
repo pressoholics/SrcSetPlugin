@@ -124,7 +124,7 @@ Initial plugin launch.
 Added uninstall option to regeneration tool to remove all instances of srcset from all images in all posts,pages,custom post types.
 
 = 1.2 =
-Added Picturefill.js to expand srcset support tp all browsers both desktop and mobile.
+Added Picturefill.js expanding srcset support all browsers both desktop and mobile.
 
 == Upgrade Notice ==
 
@@ -132,4 +132,4 @@ Added Picturefill.js to expand srcset support tp all browsers both desktop and m
 Added uninstall option to regeneration tool to remove all instances of srcset from all images in all posts,pages,custom post types.
 
 = 1.2 =
-Added Picturefill.js to expand srcset support tp all browsers both desktop and mobile.
+Added Picturefill.js expanding srcset support all browsers both desktop and mobile.

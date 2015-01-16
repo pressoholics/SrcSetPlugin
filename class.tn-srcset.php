@@ -82,12 +82,41 @@ class TNSrcSet {
 		//Filter TINYMCE allowed attributes for img tag
 		add_filter('tiny_mce_before_init', array($this, 'add_tinymce_attributes'));
 		
-		//tndebug(get_intermediate_image_sizes());
-		//tndebug(self::$class_config);
-		//exit();
+		//Enqueue front end scripts
+		if( !is_admin() ) {
+			
+			//Enqueue scripts
+			add_action( 'wp_enqueue_scripts', array($this, 'enqueue_scripts') );
+			
+		}
 		
 	}
-
+	
+	/**
+	* enqueue_scripts
+	* 
+	* Used By: $this->init_plugin()
+	* 
+	*
+	* @access 	public
+	* @author	Ben Moody
+	*/
+	public function enqueue_scripts() {
+		
+		//Init vars
+		$js_inc_path 	= $this->plugin_url . 'inc/js/';
+		$css_inc_path 	= $this->plugin_url . 'inc/css/';
+		
+		//Enqueue picturefill script
+		wp_register_script( 'picturefill',
+			$js_inc_path . 'picturefill.min.js',
+			array(),
+			'1.0',
+			TRUE
+		);
+		wp_enqueue_script( 'picturefill' );
+		
+	}
 	
 	/**
 	* admin_init_plugin

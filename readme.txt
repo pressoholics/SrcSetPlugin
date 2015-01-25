@@ -1,4 +1,4 @@
-=== TrueNorth SrcSet for Wordpress ===
+=== SrcSet Responsive Images for Wordpress ===
 Contributors: ben.moody,ew_holmes
 Tags: srcset,responsive,responsive images,srcset attribute,retina,retina images
 Requires at least: 3.0
@@ -7,24 +7,24 @@ Stable tag: 1.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
-TrueNorth SrcSet for Wordpress Plugin allows you to change the dimensions of images based on browser size by automatically adding the srcset attribute.
+SrcSet Responsive Images for Wordpress allows you to change the dimensions of images based on browser size by automatically adding the srcset attribute.
 
 == Description ==
-TrueNorth SrcSet for Wordpress Plugin allows you to change the dimensions of images based on the current width of the users browser. When you assign a SrcSet group to an image size within Wordpress (e.g. medium or large). Any image within a post or page using that image size will have the SrcSet group's attribute applied to it.
+SrcSet responsive images for Wordpress allows you to assign a SrcSet group to an image size within Wordpress (e.g. medium or large). Any image within a post or page using that image size will have the SrcSet group's attribute applied to it resulting in responsive images using the srcset attribute.
 
 [youtube http://www.youtube.com/watch?v=2JTaunYbt1M]
 
 = Why use SrcSet? =
 
-The srcset attribute is fully supported by most modern mobile devices. Where the attribute shines is allowing developers and content creators to swap out large images for smaller ones more suitable to the size of the devices screen. This allows for less overhead when loading a website, improving load times, and reducing the amount of bandwidth visitors have to consume to view the site.
+The srcset attribute is fully supported by most modern mobile devices. Where the attribute shines is allowing developers and content creators to eaily create responsive images for Wordpress, swapping out large images for smaller ones more suitable to the size of the devices screen. This allows for less overhead when loading a website, improving load times, and reducing the amount of bandwidth visitors have to consume to view the site.
 
 = How does TrueNorth SrcSet Plugin Help? =
 
-The TrueNorth SrcSet Wordpress Plugin automates the generation of the srcset attribute for all images attached to or within a post/page's content. SrcSet groups can be setup for any image size registered with Wordpress and once setup all images using that image size (e.g. 'medium') will have that SrcSet group's attribute added to the img tag. No short codes, in fact no coding required at all!
+SrcSet responsive images for Wordpress automates the generation of the srcset attribute for all images attached to or within a post/page's content. SrcSet groups can be setup for any image size registered with Wordpress and once setup all images using that image size (e.g. 'medium') will have that SrcSet group's attribute added to the img tag. No short codes, in fact no coding required at all!
 
 = What about all my existing post images? =
 
-The TrueNorth SrcSet Wordpress Plugin comes with a Regeneration tool which will search all your posts and pages (including custom post types) find any images using sizes which have SrcSet groups and automatically add the srcset attribute to each one!
+SrcSet responsive images for Wordpress comes with a Regeneration tool which will search all your posts and pages (including custom post types) find any images using sizes which have SrcSet groups and automatically add the srcset attribute to each one!
 
 
 == Installation ==

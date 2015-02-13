@@ -3,7 +3,7 @@ Contributors: ben.moody,ew_holmes
 Tags: srcset,responsive,responsive images,srcset attribute,retina,retina images
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 1.2
+Stable tag: 1.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -126,6 +126,9 @@ Added uninstall option to regeneration tool to remove all instances of srcset fr
 = 1.2 =
 Added Picturefill.js expanding srcset support all browsers both desktop and mobile.
 
+= 1.3 =
+Altered the the filter used to hook into `the_post_thumbnail()` and `get_the_post_thumbnail()`. We now support `wp_get_attachment_image()` and `wp_get_attachment_image_src()` as well.
+
 == Upgrade Notice ==
 
 = 1.1 =
@@ -133,3 +136,6 @@ Added uninstall option to regeneration tool to remove all instances of srcset fr
 
 = 1.2 =
 Added Picturefill.js expanding srcset support all browsers both desktop and mobile.
+
+= 1.3 =
+Altered the the filter used to hook into `the_post_thumbnail()` and `get_the_post_thumbnail()`. We now support `wp_get_attachment_image()` and `wp_get_attachment_image_src()` as well.

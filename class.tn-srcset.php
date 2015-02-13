@@ -74,7 +74,7 @@ class TNSrcSet {
 		$this->register_image_sizes();
 		
 		//Attachment image attribute filter -- for use with code e.g. get_the_post_thumbnail()
-		add_filter( 'post_thumbnail_html', array( $this, 'add_image_srcset' ), 10, 5 );
+		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_image_srcset_attribute' ), 10, 3 );
 		
 		//Attachment image attribute filter -- filters img tags added via tinymce content editor
 		add_filter( 'image_send_to_editor', array( $this, 'add_media_image_tag_srcset' ), 999, 8 );
@@ -204,23 +204,24 @@ class TNSrcSet {
 	}
 	
     /**
-    * add_image_srcset
+    * add_image_srcset_attribute
     *
-    * @Called By Filter: 'post_thumbnail_html'
+    * @Called By Filter: 'wp_get_attachment_image_attributes'
     * 
-    * Create our srcset attribute for images called via get_the_post_thumbnail(), ect
+    * Create our srcset attribute for images called via get_the_post_thumbnail(), wp_get_attachment_image, etc.
     * 
-    * @return	string	$html
+    * @return	array	$atts
     * @access 	public
-    * @author	Ben Moody
+    * @author	Eric Holmes
     */
-	public function add_image_srcset( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
-    	
-    	//Loop group sizes and get final html for image tag
-	    $html = $this->render_img_tag_html( $html, $size, $post_thumbnail_id );
+	function add_image_srcset_attribute( $atts, $attachment, $size ) {
 		
-        return $html;
-    }
+		$srcset = static::get_image_srcset( $attachment->ID, $size );
+		if ( $srcset ) { 
+			$atts['srcset'] = $srcset;
+		}
+		return $atts;
+	}
 	
 	/**
     * add_media_image_tag_srcset
@@ -274,7 +275,31 @@ class TNSrcSet {
     * @author	Ben Moody
     */
     public static function render_img_tag_html( $html = NULL, $img_size_slug = NULL, $post_thumbnail_id = NULL ) {
-		
+		$srcset = static::get_image_srcset( $post_thumbnail_id, $img_size_slug );
+		if ( $srcset ) {
+			$html = str_replace( '/>', ' srcset="' . $srcset . '"/>', $html );
+		}
+		return $html;
+	}
+	
+    /**
+    * get_image_srcset
+    *
+    * @Called By : $this->add_image_srcset_attributes()
+    * @Called By : $this->add_media_image_tag_srcset()
+    * 
+    * Helper to loop image group data and return the img tag html along with srcset attr
+    *
+    * NOTE: First checks for a srcset group assigned to the current image size, then fallback and check if the image size is in fact a srcset group, failing that just render the html as usual.
+    * 
+    * @param	string 	$html
+    * @param	string 	$img_size_slug 		//Image size slug of source image
+    * @param	int		$post_thumbnail_id	//either image id for post thumnail id for image to process
+    * @return	string	$html
+    * @access 	public static
+    * @author	Ben Moody
+    */
+	public static function get_image_srcset( $attachment_id, $size ) {
 		//Init vars
 		$srcset 			= array();
 		$srcset_group_slug	= NULL;
@@ -287,12 +312,12 @@ class TNSrcSet {
 		}
 		
 		//Check if requested size is a custom image size assigned to an srcset group
-		if( isset($img_size_rels[ $img_size_slug ]) ) {
+		if( isset( $img_size_rels[ $size ] ) ) {
 		
-			$srcset_group_slug = $img_size_rels[ $img_size_slug ];
+			$srcset_group_slug = $img_size_rels[ $size ];
 			
 			//Confirm that we have a group to use for this
-			if( isset(static::$class_config['img_groups'][ $srcset_group_slug ]) ) {
+			if( isset( static::$class_config['img_groups'][ $srcset_group_slug ] ) ) {
 				//cache group data
 				$srcset_group_data = static::$class_config['img_groups'][ $srcset_group_slug ];
 			}
@@ -300,14 +325,14 @@ class TNSrcSet {
 		}
 		
 		//Fallback -- check if image size is in fact a srcset group name and NOT an custom image size
-		if( empty($srcset_group_data) && isset(static::$class_config['img_groups'][$img_size_slug]) ) {
+		if( empty($srcset_group_data) && isset(static::$class_config['img_groups'][$size]) ) {
 			
 			//Cache the group data
-			$srcset_group_data = static::$class_config['img_groups'][$img_size_slug];
+			$srcset_group_data = static::$class_config['img_groups'][$size];
 			
 		}
 		
-    	if( !empty($srcset_group_data) ) {
+    	if( !empty( $srcset_group_data ) ) {
 	    	
 	    	foreach( $srcset_group_data as $breakpoint => $image_data ) {
 				
@@ -338,25 +363,19 @@ class TNSrcSet {
 			    $image_name = $image_data['thumb_size'];
 				
 				//Add regular version
-				$_attachment_src = wp_get_attachment_image_src( $post_thumbnail_id, $image_name );
+				$_attachment_src = wp_get_attachment_image_src( $attachment_id, $image_name );
 				
 				if( isset($_attachment_src[3]) ) {
 					$srcset[] = $_attachment_src[0] . " {$breakpoint}w";
-				}
-		    	
+				}	
 	    	}
-	    	
-	    	//Splice srcset into html output
-	    	if( !empty($srcset) ) {
-	    	
-	    		$_srcset = join(',', $srcset );
-		    	$html = str_replace( '/>', ' srcset="'.$_srcset.'"/>', $html );
-		    	
-	    	}
-	    	
     	}
 		
-		return $html;
+		if( !empty( $srcset ) ) {
+			return join(',', $srcset );
+		}
+		return '';
+		
 	}
     
     /**

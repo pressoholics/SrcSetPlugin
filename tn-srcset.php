@@ -13,7 +13,7 @@
 
 //Define plugin constants
 define( 'TNSRCSET__MINIMUM_WP_VERSION', '3.0' );
-define( 'TNSRCSET__VERSION', '1.2' );
+define( 'TNSRCSET__VERSION', '1.3' );
 define( 'TNSRCSET__DOMAIN', 'tnsrc_set_plugin' );
 
 //Plugin admin options will be available in global var with this name, also is database slug for options

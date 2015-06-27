@@ -312,7 +312,7 @@ class TNSrcSet {
 		}
 		
 		if ( is_array( $size ) ) {
-			$size = $this->get_appropriate_image_size( $attachment_id, $size );
+			$size = static::get_appropriate_image_size( $attachment_id, $size );
 		}
 		
 		//Check if requested size is a custom image size assigned to an srcset group
@@ -393,7 +393,7 @@ class TNSrcSet {
 	 * @param array $size
 	 * @return string
 	 */
-	function get_appropriate_image_size( $attachment_id, $size ) {
+	public static function get_appropriate_image_size( $attachment_id, $size ) {
 		if ( ! is_array( $size ) )
 			return $size;
 		

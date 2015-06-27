@@ -307,7 +307,7 @@ if ( !class_exists( "TNSrcSetOptions" ) ) {
 			if( isset($tnsrc_set_options['img_groups_instances']) ){
 				
 				//Loop each instance and setup options table for each
-				foreach( $tnsrc_set_options['img_groups_instances'] as $group_title ) {
+				foreach( (array)$tnsrc_set_options['img_groups_instances'] as $group_title ) {
 					
 					$_group_slug = hash("crc32b", $group_title);
 					

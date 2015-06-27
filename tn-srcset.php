@@ -70,7 +70,7 @@ function tnsrc_set_init() {
 		}
 		
 		//Loop all image group sizes
-		foreach( $tnsrc_set_options['img_groups_instances'] as $group_title ) {
+		foreach( (array)$tnsrc_set_options['img_groups_instances'] as $group_title ) {
 		
 			$_group_slug = hash("crc32b", $group_title);
 			

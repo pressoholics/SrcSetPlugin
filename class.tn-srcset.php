@@ -311,6 +311,10 @@ class TNSrcSet {
 			$img_size_rels = static::$class_config['img_size_rels'];
 		}
 		
+		if ( is_array( $size ) ) {
+			$size = $this->get_appropriate_image_size( $attachment_id, $size );
+		}
+		
 		//Check if requested size is a custom image size assigned to an srcset group
 		if( isset( $img_size_rels[ $size ] ) ) {
 		
@@ -376,6 +380,53 @@ class TNSrcSet {
 		}
 		return '';
 		
+	}
+	
+	/**
+	 * get_appropriate_image_size
+     *
+     * @Called By: $this->get_image_srcset()
+     * 
+	 * When passed an array as a $size, this will determine the image size name
+     * 
+	 * @param int $attachment_id
+	 * @param array $size
+	 * @return string
+	 */
+	function get_appropriate_image_size( $attachment_id, $size ) {
+		if ( ! is_array( $size ) )
+			return $size;
+		
+		if ( !is_array( $imagedata = wp_get_attachment_metadata( $attachment_id ) ) )
+			return 'full';
+		
+		$best_match = array();
+
+		// get the best one for a specified set of dimensions
+		foreach ( $imagedata['sizes'] as $_size => $data ) {
+
+			// dimensions provided are smaller than the image size
+			if ( ( $data['width'] >= $size[0] && $data['height'] >= $size[1] ) ) {
+
+				// First image size match
+				if ( empty( $best_match ) ) {
+					$best_match = $data;
+					$best_match['size'] = $_size;
+				} else {
+					// There's already been a size big enough, but we want the smallest image size possible
+					if ( $data['width'] <= $best_match['width'] && $data['height'] <= $best_match['height'] ) {
+						$best_match = $data;
+						$best_match['size'] = $_size;
+					}
+				}
+			}
+		}
+
+		// Found size
+		if ( ! empty( $best_match ) ) {
+			$size = $best_match['size'];
+		}
+		return 'full';
 	}
     
     /**

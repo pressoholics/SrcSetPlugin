@@ -2,8 +2,8 @@
 Contributors: ben.moody,ew_holmes
 Tags: srcset,responsive,responsive images,srcset attribute,retina,retina images
 Requires at least: 3.0
-Tested up to: 4.1
-Stable tag: 1.3
+Tested up to: 4.3
+Stable tag: 1.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -128,6 +128,10 @@ Added Picturefill.js expanding srcset support all browsers both desktop and mobi
 
 = 1.3 =
 Altered the the filter used to hook into `the_post_thumbnail()` and `get_the_post_thumbnail()`. We now support `wp_get_attachment_image()` and `wp_get_attachment_image_src()` as well.
+
+= 1.4 =
+Updated Picturefill.js to v2.3.1, which fixes a JS error in Internet Explorer 8.
+Fixed some strict standards and notices when passing dimensions to an image call, rather than registered image sizes.
 
 == Upgrade Notice ==
 

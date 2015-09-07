@@ -111,7 +111,7 @@ class TNSrcSet {
 		wp_register_script( 'picturefill',
 			$js_inc_path . 'picturefill.min.js',
 			array(),
-			'1.0',
+			'2.3.1',
 			TRUE
 		);
 		wp_enqueue_script( 'picturefill' );
